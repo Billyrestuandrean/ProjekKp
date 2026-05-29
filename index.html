@@ -731,8 +731,7 @@
         </div>
     </div>
 </footer>
-    <script src="./script.js" defer></script>
-        <script>
+<script>
 const { createClient } = supabase
 
 const db = createClient(
@@ -1032,7 +1031,82 @@ console.log(productsData);
     });
 }
 // ... kode searchProducts di atas .../ <-- kurung penutup searchProducts
-        
+        document.getElementById("tipe-mobil")
+  .addEventListener("change", function () {
+    filterTipeMobil(this.value);
+  });
+
+async function filterTipeMobil(tipeMobil) {
+  try {
+    let query = db.from("barang").select("*");
+
+    if (tipeMobil !== "all") {
+      query = query.ilike("TipeMobil", tipeMobil);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.log("Error filter:", error);
+      return;
+    }
+
+    productsData = data;
+    featuredProducts.innerHTML = "";
+
+    if (!data || data.length === 0) {
+      featuredProducts.innerHTML = `
+        <div class="text-center py-10 col-span-full">
+          <h2 class="text-xl font-bold">
+            Tidak ada produk untuk tipe ${tipeMobil}
+          </h2>
+        </div>
+      `;
+      return;
+    }
+
+    data.forEach(product => {
+      featuredProducts.innerHTML += `
+        <div class="part-card">
+          <div class="card-img">
+            <img src="${product.url_gambar}">
+          </div>
+
+          <div class="card-body">
+            <h3>${product.nama_barang}</h3>
+
+            <p class="part-no">
+              Part No: ${product.part || "-"}
+            </p>
+
+            <div class="card-footer">
+              <div class="harga">
+                Rp${Number(product.harga).toLocaleString("id-ID")}
+              </div>
+
+              <button class="btn-add"
+                onclick="addToCart(${product.id_barang})">
+                <i class="fas fa-cart-plus"></i>
+                Tambah
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    // reset tombol lihat semua
+    isShowAll = false;
+    document.getElementById("btnLihatSemua").innerText = "Lihat Semua";
+
+    // scroll ke produk
+    document.getElementById("featuredProducts")
+      .scrollIntoView({ behavior: "smooth" });
+
+  } catch (err) {
+    console.log("Error:", err);
+  }
+}
         // TAMBAHKAN DI SINI ↓
  async function filterKategori(event, kategori) {
     event.preventDefault();

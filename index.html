@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suzuki Genuine Parts - Official Spare Parts Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+<body>
+<div class="topbar">
+    <div>
+       <a href="https://wa.me/628115663088"
+   target="_blank"
+   class="hover:text-green-400 transition">
+
+    <i class="fas fa-phone-alt"></i>
+    628115663088
+
+</a>
+
+<a href="mailto:Hubertus8899@gmail.com"
+   class="ml-4 hover:text-blue-400 transition">
+
+    <i class="fas fa-envelope"></i>
+    Hubertus8899@gmail.com
+
+</a>
+    </div>
+    <div>
+        <div>
+    <a href="https://maps.app.goo.gl/aw23vdo3yebMBf2fA?g_st=ic" 
+       target="_blank" 
+       rel="noopener noreferrer">
+        <i class="fas fa-map-marker-alt"></i> Dealer Location
+    </a>
+
+    &nbsp;&nbsp;
+
+    <a href="https://wa.me/628115663088" 
+   target="_blank" 
+   rel="noopener noreferrer">
+    <i class="fas fa-question-circle"></i> Help Center
+</a>
+</div>
+    </div>
+</div>
+ 
+<!-- Header -->
+<header>
+    <div class="header-inner">
+        <a href="#" class="logo">
+            <div class="logo-icon"><i class="fas fa-cog fa-spin" style="animation-duration:4s"></i></div>
+            <div class="logo-text">
+                SUZUKI
+                <span>GENUINE PARTS</span>
+            </div>
+        </a>
+ 
+      <div class="search-wrap">
+
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="Cari suku cadang berdasarkan nama atau nomor part..."
+    >
+
+    <button onclick="searchProducts()">
+        <i class="fas fa-search"></i>
+    </button>
+
+</div>
+ 
+        <div class="header-actions">
+
+    <a href="#">
+        <i class="fas fa-heart"></i>
+    </a>
+
+    <a href="#">
+        <i class="fas fa-user"></i>
+    </a>
+
+    <a href="cart.html" style="position:relative">
+
+        <i class="fas fa-shopping-cart"></i>
+
+        <span class="cart-badge">0</span>
+
+    </a>
+
+</div>
+    </div>
+</header>
+ 
+<!-- Navigation -->
+<nav>
+    <div class="nav-inner">
+        <div class="dropdown">
+            <a href="#">Sparepart Mobil <i class="fas fa-chevron-down" style="font-size:10px"></i></a>
+            <div class="dropdown-menu">
+                <a href="#">Semua Sparepart Mobil</a>
+                <a href="#">Ertiga</a>
+                <a href="#">Baleno</a>
+                <a href="#">Ignis</a>
+                <a href="#">Swift</a>
+            </div>
+        </div>
+        <a href="#" data-kategori="aksesoris" onclick="filterKategori(event, 'aksesoris')">Aksesoris</a>
+<a href="#" onclick="filterKategori(event, 'promo')">Promo</a>
+<a href="#" data-kategori="terbaru" onclick="filterKategori(event, 'terbaru')">Terbaru</a>
+<a href="#" data-kategori="terlaris" onclick="filterKategori(event, 'terlaris')">Terlaris</a>
+    </div>
+</nav>
+
+ 
+<!-- Hero -->
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-content">
+            <div class="hero-tag">&#9733; 100% Genuine Parts</div>
+            <h1>Sparepart Suzuki<br></h1>
+            <p>Suku cadang original langsung dari pabrik Suzuki — cocok sempurna, performa optimal untuk kendaraan Anda.</p>
+            <div class="hero-btns">
+                <a href="#" class="btn-white">Belanja Sekarang <i class="fas fa-arrow-right"></i></a>
+                <a href="#" class="btn-outline">Cari Berdasarkan Model</a>
+            </div>
+        </div>
+        <div class="hero-image">
+        
+        </div>
+    </div>
+</section>
+ 
+<!-- Finder -->
+<div class="finder">
+    <div class="finder-inner">
+        <div class="finder-title"><i class="fas fa-search-plus"></i> &nbsp;Temukan Part untuk Kendaraan Anda</div>
+        <div class="finder-field">
+            <label>Tipe</label>
+            <select>
+                <option>Tipe Mobil</option>
+                <option>Ertiga</option>
+                <option>Jimny</option>
+                <option>Grand Vitara</option>
+                <option>Baleno</option>
+                <option>Ignis</option>
+                <option>Carry</option>
+                <option>APV</option>
+            </select>
+        </div>
+        <button class="btn-find"><i class="fas fa-search"></i> &nbsp;Cari Part</button>
+    </div>
+</div>
+ 
+
+<!-- Featured Products -->
+<section class="section">
+    <div class="section-inner">
+        <div class="section-head">
+            <h2 class="section-title">Produk <span>Utama</span></h2>
+            <a href="javascript:void(0)"
+   id="btnLihatSemua"
+   class="view-all"
+   onclick="toggleProducts()">
+
+    Lihat Semua
+
+</a>
+        </div>
+        <div class="products-grid" id="featuredProducts">
+            
+        </div>
+    </div>
+</section>
+  
+<!-- Why Us -->
+<section class="section why">
+    <div class="section-inner">
+        <div class="section-head">
+            <h2 class="section-title">Mengapa Memilih <span>Suzuki Genuine?</span></h2>
+        </div>
+        <div class="why-grid">
+            <div class="why-card">
+                <div class="why-icon"><i class="fas fa-check-circle"></i></div>
+                <h3>100% Genuine</h3>
+                <p>Langsung dari pabrik Suzuki — cocok sempurna dan performa optimal untuk kendaraan Anda.</p>
+            </div>
+            <div class="why-card">
+                <div class="why-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>Bergaransi Resmi</h3>
+                <p>Jaga garansi kendaraan Anda tetap berlaku dengan hanya menggunakan sparepart asli Suzuki.</p>
+            </div>
+            <div class="why-card">
+                <div class="why-icon"><i class="fas fa-truck"></i></div>
+                <h3>Pengiriman Cepat</h3>
+                <p>Pengiriman ke seluruh Indonesia dengan opsi ekspres ke dealer resmi terdekat.</p>
+            </div>
+        </div>
+    </div>
+</section>
+ 
+<!-- Newsletter -->
+<div class="newsletter">
+    <h2>Tetap Update dengan Suzuki Parts</h2>
+    <p>Daftarkan email Anda untuk penawaran eksklusif, produk baru, dan tips perawatan kendaraan.</p>
+    <div class="nl-form">
+        <input type="email" placeholder="Alamat email Anda">
+        <button>Daftar <i class="fas fa-paper-plane"></i></button>
+    </div>
+    <p class="nl-note">Kami menghormati privasi Anda. Berhenti berlangganan kapan saja.</p>
+</div>
+ 
+<!-- Footer -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>Tentang Suzuki Parts</h4>
+                <p>Toko online resmi untuk sparepart dan aksesoris Suzuki asli di Indonesia. Kualitas terjamin langsung dari produsen.</p>
+                <div class="footer-socials">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Tautan Cepat</h4>
+                <ul>
+                    <li><a href="#">Beranda</a></li>
+                    <li><a href="#">Toko</a></li>
+                    <li><a href="#">Promo</a></li>
+                    <li><a href="#">Produk Baru</a></li>
+                    <li><a href="#">Akun Saya</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Layanan Pelanggan</h4>
+                <ul>
+                    <li><a href="#">Hubungi Kami</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Kebijakan Pengiriman</a></li>
+                    <li><a href="#">Retur & Garansi</a></li>
+                    <li><a href="#">Lacak Pesanan</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Kontak</h4>
+                <ul class="footer-contact">
+                    <li><i class="fas fa-map-marker-alt"></i> PT Suzuki Indomobil Sales, Jl. Raya Pasar Minggu No.10, Jakarta</li>
+                    <li><i class="fas fa-phone-alt"></i> +62 21 1234 5678</li>
+                    <li><i class="fas fa-envelope"></i> parts@suzuki.co.id</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Suzuki Genuine Parts. All rights reserved.</p>
+            <div class="payment-icons">
+                <span class="pay-badge">VISA</span>
+                <span class="pay-badge">MC</span>
+                <span class="pay-badge">BCA</span>
+                <span class="pay-badge">MANDIRI</span>
+                <span class="pay-badge">GoPay</span>
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="./script.js" defer></script>
+        <script>
+const { createClient } = supabase
+
+const db = createClient(
+    'https://frziffueiuosikmhyoae.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyemlmZnVlaXVvc2lrbWh5b2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MTY0MDgsImV4cCI6MjA5NTI5MjQwOH0._G4TlPRL4EUps7qOWudkAcmUcKcPc42Q3kEtm2bQdhA'
+  )
+
+
+const featuredProducts =
+document.getElementById("featuredProducts");
+let productsData = [];
+
+let isShowAll = false;
+
+async function renderWebsiteProducts(showAll = false){
+
+    // Ambil data hanya sekali
+    if(productsData.length === 0){
+
+        const { data, error } = await db
+        .from("barang")
+        .select("*");
+
+        if(error){
+            console.log(error);
+            return;
+        }
+
+        productsData = data;
+    }
+
+    featuredProducts.innerHTML = "";
+
+    // Jika false tampil 4 saja
+    let tampilProduk;
+
+    if(showAll){
+        tampilProduk = productsData;
+    } else {
+        tampilProduk = productsData.slice(0, 4);
+    }
+
+    tampilProduk.forEach(product => {
+
+        featuredProducts.innerHTML += `
+
+        <div class="part-card">
+
+            <div class="card-img">
+                <img src="${product.url_gambar}">
+            </div>
+
+            <div class="card-body">
+
+                <h3>${product.nama_barang}</h3>
+
+                <p class="part-no">
+                    Part No: ${product.part}
+                </p>
+
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+
+                    <span>(Produk Baru)</span>
+                </div>
+
+                <div class="card-footer">
+
+                    <div class="harga">
+                        Rp${product.harga.toLocaleString("id-ID")}
+                    </div>
+
+                    <button class="btn-add"
+                        onclick="addToCart(${product.id_barang})">
+
+                        <i class="fas fa-cart-plus"></i>
+                        Tambah
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        `;
+    });
+
+    // Ganti teks tombol
+    const btn =
+    document.getElementById("btnLihatSemua");
+
+    if(showAll){
+        btn.innerText = "Tampilkan Sedikit";
+    } else {
+        btn.innerText = "Lihat Semua";
+    }
+}
+window.onload = async function () {
+
+    await renderWebsiteProducts();
+
+    updateCartBadge();
+
+    // Event search realtime
+    document
+        .getElementById("searchInput")
+        .addEventListener("input", searchProducts);
+
+};
+
+
+function addToCart(id) {
+
+    const product = productsData.find(
+        item => item.id_barang == id
+    );
+
+    let cart =
+    JSON.parse(localStorage.getItem("cart")) || [];
+
+    const existingItem =
+    cart.find(item => item.id_barang == id);
+
+    if(existingItem){
+
+        existingItem.qty += 1;
+
+    } else {
+
+        cart.push({
+            id_barang: product.id_barang,
+            nama_barang: product.nama_barang,
+            harga: product.harga,
+            gambar: product.url_gambar,
+            qty: 1
+        });
+
+    }
+
+    localStorage.setItem(
+        "cart",
+        JSON.stringify(cart)
+    );
+
+    updateCartBadge();
+
+    // Notifikasi modern
+    showToast("Produk berhasil ditambahkan");
+}
+
+function updateCartBadge(){
+
+    let cart =
+    JSON.parse(localStorage.getItem("cart")) || [];
+
+    let totalQty = 0;
+
+    cart.forEach(item => {
+        totalQty += item.qty;
+    });
+
+    document.querySelector(".cart-badge")
+    .innerText = totalQty;
+}
+
+// FUNCTION TOAST
+function showToast(pesan){
+
+    const toast =
+    document.getElementById("toast");
+
+    const toastText =
+    document.getElementById("toastText");
+
+    toastText.innerText = pesan;
+
+    toast.classList.remove("hidden");
+
+    setTimeout(() => {
+
+        toast.classList.add("hidden");
+
+    }, 1000); // cuma 1 detik
+
+}
+function toggleProducts(){
+
+    isShowAll = !isShowAll;
+
+    renderWebsiteProducts(isShowAll);
+}
+function searchProducts() {
+console.log("SEARCH JALAN");
+console.log(productsData);
+    const keyword = document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
+
+    // kalau kosong tampil normal
+    if (keyword === "") {
+
+        renderWebsiteProducts(isShowAll);
+        return;
+    }
+
+    // filter produk
+    const filteredProducts = productsData.filter(product => {
+
+        const namaBarang = String(product.nama_barang || "")
+            .toLowerCase();
+
+        const partNumber = String(product.part || "")
+            .toLowerCase();
+
+        return (
+            namaBarang.includes(keyword) ||
+            partNumber.includes(keyword)
+        );
+    });
+
+    featuredProducts.innerHTML = "";
+
+    // kalau tidak ada hasil
+    if (filteredProducts.length === 0) {
+
+        featuredProducts.innerHTML = `
+            <div class="text-center py-10 col-span-full">
+                <h2 class="text-2xl font-bold">
+                    Produk tidak ditemukan
+                </h2>
+            </div>
+        `;
+
+        return;
+    }
+
+    // render hasil search
+    filteredProducts.forEach(product => {
+
+        featuredProducts.innerHTML += `
+
+        <div class="part-card">
+
+            <div class="card-img">
+                <img src="${product.url_gambar}">
+            </div>
+
+            <div class="card-body">
+
+                <h3>${product.nama_barang}</h3>
+
+                <p class="part-no">
+                    Part No: ${product.part || "-"}
+                </p>
+
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+
+                    <span>(Produk Baru)</span>
+                </div>
+
+                <div class="card-footer">
+
+                    <div class="harga">
+                        Rp${Number(product.harga).toLocaleString("id-ID")}
+                    </div>
+
+                    <button class="btn-add"
+                        onclick="addToCart(${product.id_barang})">
+
+                        <i class="fas fa-cart-plus"></i>
+                        Tambah
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        `;
+    });
+}
+// ... kode searchProducts di atas .../ <-- kurung penutup searchProducts
+        
+        // TAMBAHKAN DI SINI ↓
+       async function filterKategori(event, kategori) {
+    event.preventDefault();
+
+    // reset search input
+    document.getElementById("searchInput").value = "";
+
+    try {
+        const { data, error } = await db
+            .from("barang")
+            .select("*")
+            .ilike("kategori", kategori);
+
+        if (error) {
+            console.log("Error filter:", error);
+            return;
+        }
+
+        productsData = data;
+        featuredProducts.innerHTML = "";
+
+        if (!data || data.length === 0) {
+            featuredProducts.innerHTML = `
+                <div class="text-center py-10 col-span-full">
+                    <h2 class="text-xl font-bold">
+                        Tidak ada produk ${kategori}
+                    </h2>
+                </div>
+            `;
+            return;
+        }
+
+        data.forEach(product => {
+            featuredProducts.innerHTML += `
+                <div class="part-card">
+                    <div class="card-img">
+                        <img src="${product.url_gambar}">
+                    </div>
+
+                    <div class="card-body">
+                        <h3>${product.nama_barang}</h3>
+
+                        <p class="part-no">
+                            Part No: ${product.part || "-"}
+                        </p>
+
+                        <div class="card-footer">
+                            <div class="harga">
+                                Rp${Number(product.harga).toLocaleString("id-ID")}
+                            </div>
+
+                            <button class="btn-add"
+                                onclick="addToCart(${product.id_barang})">
+                                <i class="fas fa-cart-plus"></i>
+                                Tambah
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // reset tombol lihat semua
+        isShowAll = false;
+        document.getElementById("btnLihatSemua").innerText = "Lihat Semua";
+
+        // scroll ke produk
+        document.getElementById("featuredProducts")
+            .scrollIntoView({ behavior: "smooth" });
+
+    } catch (err) {
+        console.log("Error:", err);
+    }
+}
+</script>
+<div id="toast"
+class="fixed bottom-5 right-5 hidden z-50 pointer-events-none">
+
+    <div class="bg-green-600 text-white px-6 py-4 rounded-xl shadow-xl flex items-center gap-3">
+
+        <i class="fas fa-circle-check text-2xl"></i>
+
+        <p id="toastText"
+           class="font-semibold">
+            Produk berhasil ditambahkan
+        </p>
+
+    </div>
+
+</div>
+
+</body>
+</html>

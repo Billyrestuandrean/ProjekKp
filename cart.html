@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Keranjang</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+
+<body class="bg-gray-100">
+
+<div class="max-w-5xl mx-auto p-6">
+
+    <h1 class="text-3xl font-bold mb-6">
+        <i class="fas fa-shopping-cart"></i>
+        Keranjang
+    </h1>
+
+    <!-- Tempat Produk -->
+    <div id="cartItems" class="space-y-4"></div>
+
+    <!-- Total + Checkout -->
+    <div class="mt-8 bg-white p-6 rounded shadow">
+
+        <div class="flex justify-between items-center mb-4">
+
+            <h2 class="text-2xl font-bold">
+                Total:
+            </h2>
+
+            <span id="totalHarga"
+                  class="text-2xl font-bold text-green-600">
+                Rp0
+            </span>
+
+        </div>
+<div class="mb-6">
+
+    <label class="block font-bold mb-2">
+        Nama Penerima
+    </label>
+
+    <input
+        type="text"
+        id="nama"
+        class="w-full border p-3 rounded mb-4"
+        placeholder="Masukkan nama">
+
+    <label class="block font-bold mb-2">
+        Alamat Pengiriman
+    </label>
+
+    <textarea
+        id="alamat"
+        class="w-full border p-3 rounded mb-4"
+        placeholder="Masukkan alamat"></textarea>
+
+    <label class="block font-bold mb-2">
+        Metode Pembayaran
+    </label>
+
+    <label class="block font-bold mb-3">
+    Metode Pembayaran
+</label>
+
+<div class="space-y-3">
+
+    <!-- VISA -->
+    <label class="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:border-blue-500">
+
+        <div class="flex items-center gap-3">
+
+            <input type="radio"
+                   name="metode"
+                   value="VISA - 4890 1234 5678"
+                   checked>
+
+            <i class="fa-brands fa-cc-visa text-3xl text-blue-700"></i>
+
+            <div>
+                <h3 class="font-bold">VISA</h3>
+                <p class="text-sm text-gray-500">
+                    4890 1234 5678
+                </p>
+            </div>
+
+        </div>
+
+    </label>
+
+    <!-- MasterCard -->
+    <label class="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:border-red-500">
+
+        <div class="flex items-center gap-3">
+
+            <input type="radio"
+                   name="metode"
+                   value="MasterCard - 5211 9876 5432">
+
+            <i class="fa-brands fa-cc-mastercard text-3xl text-red-500"></i>
+
+            <div>
+                <h3 class="font-bold">MasterCard</h3>
+                <p class="text-sm text-gray-500">
+                    5211 9876 5432
+                </p>
+            </div>
+
+        </div>
+
+    </label>
+
+    <!-- BCA -->
+    <label class="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:border-blue-600">
+
+        <div class="flex items-center gap-3">
+
+            <input type="radio"
+                   name="metode"
+                   value="BCA - 1234567890">
+
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg"
+                 class="w-14">
+
+            <div>
+                <h3 class="font-bold">BCA</h3>
+                <p class="text-sm text-gray-500">
+                    1234567890
+                </p>
+            </div>
+
+        </div>
+
+    </label>
+
+    <!-- Mandiri -->
+    <label class="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:border-yellow-500">
+
+        <div class="flex items-center gap-3">
+
+            <input type="radio"
+                   name="metode"
+                   value="Mandiri - 9876543210">
+
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg"
+                 class="w-16">
+
+            <div>
+                <h3 class="font-bold">Mandiri</h3>
+                <p class="text-sm text-gray-500">
+                    9876543210
+                </p>
+            </div>
+
+        </div>
+
+    </label>
+
+    <!-- GoPay -->
+    <label class="flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:border-green-500">
+
+        <div class="flex items-center gap-3">
+
+            <input type="radio"
+                   name="metode"
+                   value="GoPay - 081563742646">
+
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg"
+                 class="w-14">
+
+            <div>
+                <h3 class="font-bold">GoPay</h3>
+                <p class="text-sm text-gray-500">
+                    081563742646
+                </p>
+            </div>
+
+        </div>
+
+    </label>
+
+</div>
+
+</div>
+        <button onclick="checkoutCart()"
+            class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded text-lg font-bold">
+
+            <i class="fas fa-credit-card"></i>
+            Checkout Sekarang
+
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+const cartItems =
+document.getElementById("cartItems");
+
+const totalHarga =
+document.getElementById("totalHarga");
+
+function renderCart() {
+
+    cartItems.innerHTML = "";
+
+    let total = 0;
+
+    // Jika keranjang kosong
+    if(cart.length === 0){
+
+        cartItems.innerHTML = `
+
+        <div class="bg-white p-10 rounded shadow text-center">
+
+            <i class="fas fa-shopping-cart text-5xl text-gray-400 mb-4"></i>
+
+            <h2 class="text-2xl font-bold mb-2">
+                Keranjang Masih Kosong
+            </h2>
+
+            <p class="text-gray-500">
+                Silakan tambahkan produk terlebih dahulu
+            </p>
+
+        </div>
+
+        `;
+
+        totalHarga.innerText = "Rp0";
+
+        return;
+    }
+
+    // Tampilkan produk
+    cart.forEach((item, index) => {
+if(item.checked){
+
+    total += item.harga * item.qty;
+}
+        cartItems.innerHTML += `
+
+<div class="bg-white p-4 rounded shadow flex items-center gap-4">
+
+    <!-- Checkbox -->
+    <input
+        type="checkbox"
+        class="w-5 h-5"
+        onchange="toggleItem(${index})"
+        ${item.checked ? "checked" : ""}
+    >
+
+    <!-- Gambar -->
+    <img src="${item.gambar}"
+         class="w-28 h-28 object-cover rounded">
+
+    <div class="flex-1">
+
+        <h2 class="text-xl font-bold mb-2">
+            ${item.nama_barang}
+        </h2>
+
+        <p class="text-green-600 font-bold text-lg">
+            Rp${item.harga.toLocaleString("id-ID")}
+        </p>
+
+        <!-- Tombol jumlah -->
+        <div class="flex items-center gap-3 mt-3">
+
+            <button
+                onclick="kurangQty(${index})"
+                class="bg-gray-200 px-3 py-1 rounded">
+                -
+            </button>
+
+            <span class="font-bold text-lg">
+                ${item.qty}
+            </span>
+
+            <button
+                onclick="tambahQty(${index})"
+                class="bg-gray-200 px-3 py-1 rounded">
+                +
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- Total -->
+    <div class="text-right">
+
+        <p class="font-bold text-lg mb-4">
+            Rp${(item.harga * item.qty).toLocaleString("id-ID")}
+        </p>
+
+        <button
+            onclick="hapusItem(${index})"
+            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+
+            <i class="fas fa-trash"></i>
+            Hapus
+
+        </button>
+
+    </div>
+
+</div>
+
+`;
+    });
+
+    // Total semua
+    totalHarga.innerText =
+    "Rp" + total.toLocaleString("id-ID");
+}
+
+// Simpan cart
+function simpanCart(){
+
+    localStorage.setItem(
+        "cart",
+        JSON.stringify(cart)
+    );
+
+    renderCart();
+}
+
+// Tambah jumlah
+function tambahQty(index){
+
+    cart[index].qty++;
+
+    simpanCart();
+}
+
+// Kurangi jumlah
+function kurangQty(index){
+
+    if(cart[index].qty > 1){
+
+        cart[index].qty--;
+
+    } else {
+
+        cart.splice(index, 1);
+
+    }
+
+    simpanCart();
+}
+
+// Hapus barang
+function hapusItem(index){
+
+    if(confirm("Hapus produk ini?")){
+
+        cart.splice(index, 1);
+
+        simpanCart();
+    }
+}
+
+// Checkout
+function checkoutCart(){
+
+    // Ambil produk yang dicentang
+    const selectedItems =
+    cart.filter(item => item.checked);
+
+    // Jika belum pilih produk
+    if(selectedItems.length === 0){
+
+        alert("Pilih produk terlebih dahulu!");
+        return;
+    }
+
+    const nama =
+    document.getElementById("nama").value;
+
+    const alamat =
+    document.getElementById("alamat").value;
+
+    const metode =
+    document.querySelector(
+    'input[name="metode"]:checked'
+    ).value;
+
+    if(nama === "" || alamat === ""){
+
+        alert("Lengkapi data checkout!");
+        return;
+    }
+
+    let total = 0;
+
+    let daftarProduk = "";
+
+    // Ambil hanya produk yang dicentang
+    selectedItems.forEach(item => {
+
+        total += item.harga * item.qty;
+
+        daftarProduk +=
+`• ${item.nama_barang}
+Qty: ${item.qty}
+Subtotal: Rp${(item.harga * item.qty).toLocaleString("id-ID")}
+
+`;
+
+    });
+
+    // Format pesan WhatsApp
+    const pesan = `Halo Admin Suzuki Parts
+
+Saya ingin checkout dengan detail berikut:
+
+Nama:
+${nama}
+
+Alamat:
+${alamat}
+
+Metode Pembayaran:
+${metode}
+
+======================
+
+Produk:
+${daftarProduk}
+
+======================
+
+Total Pembayaran:
+Rp${total.toLocaleString("id-ID")}
+
+Terima kasih.`;
+
+    // Nomor WhatsApp tujuan
+    const nomorWA = "6281563742646";
+
+    // Redirect ke WhatsApp
+    window.open(
+        `https://wa.me/${nomorWA}?text=${encodeURIComponent(pesan)}`,
+        "_blank"
+    );
+
+    // Hapus hanya produk yang dicentang
+    cart = cart.filter(item => !item.checked);
+
+    localStorage.setItem(
+        "cart",
+        JSON.stringify(cart)
+    );
+
+    renderCart();
+}
+
+// Jalankan pertama kali
+renderCart();
+function tutupPopup(){
+
+    document.getElementById("popupNotif")
+    .classList.add("hidden");
+
+    localStorage.removeItem("cart");
+
+    cart = [];
+
+    renderCart();
+}
+function toggleItem(index){
+
+    cart[index].checked =
+    !cart[index].checked;
+
+    simpanCart();
+}
+</script>
+<!-- Popup Notifikasi -->
+<div id="popupNotif"
+class="fixed inset-0 bg-black bg-opacity-50 hidden
+flex items-center justify-center z-50">
+
+    <div class="bg-white p-8 rounded-xl shadow-xl text-center w-96">
+
+        <div class="text-green-500 text-6xl mb-4">
+            <i class="fas fa-circle-check"></i>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-2">
+            Checkout Berhasil
+        </h2>
+
+        <p id="popupText"
+           class="text-gray-600 mb-6">
+        </p>
+
+        <button onclick="tutupPopup()"
+            class="bg-green-600 hover:bg-green-700
+            text-white px-6 py-3 rounded-lg">
+
+            OK
+
+        </button>
+
+    </div>
+
+</div>
+</body>
+</html>

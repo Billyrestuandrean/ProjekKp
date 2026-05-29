@@ -1,3 +1,10 @@
+const { createClient } = supabase
+
+const db = createClient(
+    'https://frziffueiuosikmhyoae.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyemlmZnVlaXVvc2lrbWh5b2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MTY0MDgsImV4cCI6MjA5NTI5MjQwOH0._G4TlPRL4EUps7qOWudkAcmUcKcPc42Q3kEtm2bQdhA'
+  )
+
 document.addEventListener('DOMContentLoaded', function() {
     const mobileMenu = document.getElementById('mobileMenu');
 
@@ -252,7 +259,7 @@ function logout(){
   localStorage.removeItem("isLogin");
 
   window.location.href =
-  "login.html";
+  "index.html";
 
 }
 

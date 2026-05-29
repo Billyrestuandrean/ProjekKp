@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="./style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
     /* ============================================
        RESPONSIVE STYLES - MOBILE FIRST
@@ -50,6 +52,12 @@
         gap: 10px;
         padding: 12px 16px;
     }
+
+    .header-actions {
+        display: flex;
+        width: 40%;
+        justify-content: space-between;
+    }
     @media (max-width: 768px) {
         .header-inner {
             flex-wrap: wrap;
@@ -65,6 +73,7 @@
         }
         .header-actions {
             margin-left: auto;
+
         }
     }
     @media (max-width: 480px) {
@@ -430,7 +439,7 @@
 </div>
  
 <!-- Header -->
-<header>
+<header style="z-index: 9999;" >
     <div class="header-inner">
         <a href="#" class="logo">
             <div class="logo-icon"><i class="fas fa-cog fa-spin" style="animation-duration:4s"></i></div>
@@ -455,22 +464,18 @@
 </div>
  
         <div class="header-actions">
+            <a href="cart.html" style="position:relative">
+        
+                <i class="fas fa-shopping-cart"></i>
+        
+                <span class="cart-badge">0</span>
+        
+            </a>
 
-    <a href="#">
-        <i class="fas fa-heart"></i>
+    <a class="btn-add" style="color: white; font-size: 18px; font-weight: 500;" href="/login.html">
+     Login Admin
     </a>
 
-    <a href="/login.html">
-    <i class="fas fa-sign-out-alt"></i>
-    </a>
-
-    <a href="cart.html" style="position:relative">
-
-        <i class="fas fa-shopping-cart"></i>
-
-        <span class="cart-badge">0</span>
-
-    </a>
 
 </div>
     </div>
@@ -479,16 +484,6 @@
 <!-- Navigation -->
 <nav>
     <div class="nav-inner">
-        <div class="dropdown">
-            <a href="#">Sparepart Mobil <i class="fas fa-chevron-down" style="font-size:10px"></i></a>
-            <div class="dropdown-menu">
-                <a href="#">Semua Sparepart Mobil</a>
-                <a href="#">Ertiga</a>
-                <a href="#">Baleno</a>
-                <a href="#">Ignis</a>
-                <a href="#">Swift</a>
-            </div>
-        </div>
         <a href="#" data-kategori="aksesoris" onclick="filterKategori(event, 'aksesoris')">Aksesoris</a>
 <a href="#" onclick="filterKategori(event, 'promo')">Promo</a>
 <a href="#" data-kategori="terbaru" onclick="filterKategori(event, 'terbaru')">Terbaru</a>
@@ -521,15 +516,15 @@
         <div class="finder-title"><i class="fas fa-search-plus"></i> &nbsp;Temukan Part untuk Kendaraan Anda</div>
         <div class="finder-field">
             <label>Tipe</label>
-            <select>
-                <option>Tipe Mobil</option>
-                <option>Ertiga</option>
-                <option>Jimny</option>
-                <option>Grand Vitara</option>
-                <option>Baleno</option>
-                <option>Ignis</option>
-                <option>Carry</option>
-                <option>APV</option>
+            <select id="tipe-mobil">
+                <option value="all">All</option>
+                <option value="ertiga">Ertiga</option>
+                <option value="jimny">Jimny</option>
+                <option value="grandVitara">Grand Vitara</option>
+                <option value="baleno">Baleno</option>
+                <option value="ignis">Ignis</option>
+                <option value="carry">Carry</option>
+                <option value="apv">APV</option>
             </select>
         </div>
         <button class="btn-find"><i class="fas fa-search"></i> &nbsp;Cari Part</button>
@@ -584,16 +579,103 @@
 </section>
  
 <!-- Newsletter -->
-<div class="newsletter">
-    <h2>Tetap Update dengan Suzuki Parts</h2>
-    <p>Daftarkan email Anda untuk penawaran eksklusif, produk baru, dan tips perawatan kendaraan.</p>
-    <div class="nl-form">
-        <input type="email" placeholder="Alamat email Anda">
-        <button>Daftar <i class="fas fa-paper-plane"></i></button>
+<div class="newsletter" style="background: #1a56a0; padding: 40px 16px;">
+  <div style="max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch; color: #555;">
+
+    <!-- INFO KIRI -->
+    <div style="flex: 1 1 280px; background: #fff; border-radius: 12px; padding: 28px 24px; display: flex; flex-direction: column; gap: 16px; text-align: left;">
+      
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; flex-direction: column;">
+          <h2 style="font-size: 20px; font-weight: 700; margin: 0 0 6px;">Suzuki Genuine Parts</h2>
+          <span style="background: #1a56a0; color: #fff; font-size: 12px; padding: 4px 12px; border-radius: 20px; font-weight: 500;">
+            ★ Toko Resmi
+          </span>
+        </div>
+        <i class="fas fa-map-marker-alt" style="font-size: 24px; color: #1a56a0;"></i>
+      </div>
+
+      <hr style="border: none; border-top: 1px solid #eee; margin: 0;">
+
+      <!-- Alamat -->
+      <div style="background: #f9f9f9; border-radius: 8px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start;">
+        <i class="fas fa-map-marker-alt" style="color: #1a56a0; margin-top: 2px; flex-shrink: 0;"></i>
+        <div style="display: flex; flex-direction: column;">
+          <p style="font-weight: 600; margin: 0 0 4px; font-size: 14px;">Alamat</p>
+          <p style="font-size: 13px; color: #555; margin: 0; line-height: 1.5;">
+            Lengkong Gudang Tim.,<br>Kec. Serpong, Kota Tangerang Selatan,<br>Banten 15310
+          </p>
+        </div>
+      </div>
+
+      <!-- Telepon -->
+      <div style="background: #f9f9f9; border-radius: 8px; padding: 12px 14px; display: flex; gap: 12px; align-items: center;">
+        <i class="fas fa-phone" style="color: #1a56a0; flex-shrink: 0;"></i>
+        <div>
+          <p style="font-weight: 600; margin: 0 0 2px; font-size: 14px;">Telepon</p>
+          <p style="font-size: 13px; color: #555; margin: 0;">+62 811-5663-088</p>
+        </div>
+      </div>
+
+      <!-- Jam Buka -->
+      <div style="background: #f9f9f9; border-radius: 8px; padding: 12px 14px; display: flex; gap: 12px; align-items: center;">
+        <i class="fas fa-clock" style="color: #1a56a0; flex-shrink: 0;"></i>
+        <div>
+          <p style="font-weight: 600; margin: 0 0 2px; font-size: 14px;">Jam Buka</p>
+          <p style="font-size: 13px; color: #555; margin: 0;">08:00 – 17:00</p>
+          <p style="font-size: 12px; color: #1a56a0; margin: 2px 0 0; font-weight: 500;">Senin – Sabtu</p>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div style="background: #f9f9f9; border-radius: 8px; padding: 12px 14px; display: flex; gap: 12px; align-items: center;">
+        <i class="fas fa-envelope" style="color: #1a56a0; flex-shrink: 0;"></i>
+        <div>
+          <p style="font-weight: 600; margin: 0 0 2px; font-size: 14px;">Email</p>
+          <p style="font-size: 13px; color: #555; margin: 0;">Hubertus8899@gmail.com</p>
+        </div>
+      </div>
+
+      <!-- Tombol -->
+      <a href="https://www.google.com/maps/dir/?api=1&destination=-6.295830,106.679401"
+         target="_blank"
+         style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #1a56a0; color: #fff; text-decoration: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; margin-top: auto;">
+        <i class="fas fa-location-arrow"></i> Petunjuk Arah
+      </a>
+
+      <div style="display: flex; gap: 8px;">
+        <a href="tel:+628115663088"
+           style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; border: 1.5px solid #1a56a0; color: #1a56a0; text-decoration: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600;">
+          <i class="fas fa-phone"></i> Telepon
+        </a>
+        <a href="https://wa.me/628115663088" target="_blank"
+           style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; border: 1.5px solid #25d366; color: #25d366; text-decoration: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600;">
+          <i class="fab fa-whatsapp"></i> WhatsApp
+        </a>
+      </div>
+
     </div>
-    <p class="nl-note">Kami menghormati privasi Anda. Berhenti berlangganan kapan saja.</p>
+
+    <!-- MAP KANAN -->
+    <div style="flex: 2 1 400px ; border-radius: 12px; overflow: hidden; min-height: 460px;">
+      <div id="map" style="width: 100%; height: 100%; min-height: 460px;"></div>
+    </div>
+
+  </div>
 </div>
- 
+
+<script>
+  const map = L.map("map").setView([-6.295830, 106.679401], 16);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(map);
+
+  L.marker([-6.295830, 106.679401])
+    .addTo(map)
+    .bindPopup("<b>Suzuki Genuine Parts</b><br>Lokasi toko kami.")
+    .openPopup();
+</script> 
 <!-- Footer -->
 <footer>
     <div class="footer-inner">
@@ -631,9 +713,9 @@
             <div class="footer-col">
                 <h4>Kontak</h4>
                 <ul class="footer-contact">
-                    <li><i class="fas fa-map-marker-alt"></i> PT Suzuki Indomobil Sales, Jl. Raya Pasar Minggu No.10, Jakarta</li>
-                    <li><i class="fas fa-phone-alt"></i> +62 21 1234 5678</li>
-                    <li><i class="fas fa-envelope"></i> parts@suzuki.co.id</li>
+                    <li><i class="fas fa-map-marker-alt"></i> PT Suzuki Indomobil Sales,  Lengkong Gudang Tim.,<br>Kec. Serpong, Kota Tangerang Selatan,<br>Banten 15310</li>
+                    <li><i class="fas fa-phone-alt"></i> 628115663088</li>
+                    <li><i class="fas fa-envelope"></i> Hubertus8899</li>
                 </ul>
             </div>
         </div>
@@ -711,30 +793,17 @@ async function renderWebsiteProducts(showAll = false){
                     Part No: ${product.part}
                 </p>
 
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
+                
 
-                    <span>(Produk Baru)</span>
-                </div>
-
-                <div class="card-footer">
-
-                    <div class="harga">
-                        Rp${product.harga.toLocaleString("id-ID")}
-                    </div>
-
-                    <button class="btn-add"
-                        onclick="addToCart(${product.id_barang})">
-
-                        <i class="fas fa-cart-plus"></i>
-                        Tambah
-
-                    </button>
-
+                <div class="card-footer"> 
+                    <div class="harga"> Rp${Number(product.harga).toLocaleString("id-ID")} </div> 
+                    <div style=" display:flex; align-items:center; gap:8px; width:100%; margin-top:10px; "> 
+                        <input type="number" id="qty-${product.id_barang}" value="1" min="1" style=" width:70px; padding:8px; border:1px solid #d1d5db; border-radius:8px; text-align:center; outline:none; " > 
+                        <button class="btn-add" onclick="addToCart(${product.id_barang})" style="flex:1;"> 
+                            <i class="fas fa-cart-plus"></i> 
+                            Tambah 
+                        </button> 
+                    </div> 
                 </div>
 
             </div>
@@ -774,6 +843,17 @@ function addToCart(id) {
         item => item.id_barang == id
     );
 
+    // ambil qty dari input
+    let qtyInput =
+    document.getElementById(`qty-${id}`);
+
+    let qty = parseInt(qtyInput.value);
+
+    // validasi
+    if(isNaN(qty) || qty < 1){
+        qty = 1;
+    }
+
     let cart =
     JSON.parse(localStorage.getItem("cart")) || [];
 
@@ -782,7 +862,7 @@ function addToCart(id) {
 
     if(existingItem){
 
-        existingItem.qty += 1;
+        existingItem.qty += qty;
 
     } else {
 
@@ -791,7 +871,7 @@ function addToCart(id) {
             nama_barang: product.nama_barang,
             harga: product.harga,
             gambar: product.url_gambar,
-            qty: 1
+            qty: qty
         });
 
     }
@@ -803,9 +883,13 @@ function addToCart(id) {
 
     updateCartBadge();
 
+    // reset qty ke 1 setelah ditambah
+    qtyInput.value = 1;
+
     // Notifikasi modern
-    showToast("Produk berhasil ditambahkan");
+    showToast(qty + " produk berhasil ditambahkan");
 }
+
 
 function updateCartBadge(){
 
@@ -950,7 +1034,7 @@ console.log(productsData);
 // ... kode searchProducts di atas .../ <-- kurung penutup searchProducts
         
         // TAMBAHKAN DI SINI ↓
-       async function filterKategori(event, kategori) {
+ async function filterKategori(event, kategori) {
     event.preventDefault();
 
     // reset search input

@@ -16,6 +16,58 @@
 </head>
 
 <body>
+  <div id="editModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+  <div style="background:#fff; border-radius:12px; padding:1.5rem; width:100%; max-width:480px; margin:1rem;">
+    
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem;">
+      <h2 style="font-size:16px; font-weight:500; margin:0;">Edit Produk</h2>
+      <button onclick="closeEditModal()" style="background:none; border:none; cursor:pointer; font-size:20px; color:#888;">✕</button>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div>
+        <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">Nama Barang</label>
+        <input id="edit-name" type="text" style="width:100%; box-sizing:border-box; padding:8px; border:1px solid #ddd; border-radius:8px;" />
+      </div>
+      <div>
+        <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">Part</label>
+        <input id="edit-part" type="text" style="width:100%; box-sizing:border-box; padding:8px; border:1px solid #ddd; border-radius:8px;" />
+      </div>
+      <div>
+        <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">Harga</label>
+        <input id="edit-price" type="number" style="width:100%; box-sizing:border-box; padding:8px; border:1px solid #ddd; border-radius:8px;" />
+      </div>
+      <div>
+        <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">URL Gambar</label>
+        <input id="edit-image" type="text" style="width:100%; box-sizing:border-box; padding:8px; border:1px solid #ddd; border-radius:8px;" />
+      </div>
+      <div>
+        <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">Kategori</label>
+        <input id="edit-category" type="text" style="width:100%; box-sizing:border-box; padding:8px; border:1px solid #ddd; border-radius:8px;" />
+      </div>
+      <div>
+        <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">Tipe Mobil</label>
+        <select id="edit-car-type" style="width:100%; box-sizing:border-box; padding:8px; border:1px solid #ddd; border-radius:8px;">
+          <option value="">-- Pilih Tipe Mobil --</option>
+          <option value="ertiga">Ertiga</option>
+          <option value="jimny">Jimny</option>
+          <option value="grandVitara">Grand Vitara</option>
+          <option value="baleno">Baleno</option>
+          <option value="ignis">Ignis</option>
+          <option value="carry">Carry</option>
+          <option value="apv">APV</option>
+          <!-- Tambahkan tipe mobil lainnya di sini -->
+        </select>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:8px; margin-top:1.25rem; justify-content:flex-end;">
+      <button onclick="closeEditModal()">Batal</button>
+      <button onclick="saveEditProduct()">Simpan</button>
+    </div>
+
+  </div>
+</div>
 
 <!-- TOPBAR -->
 
@@ -66,6 +118,17 @@
       <input type="text" 
       id="kategori" 
       placeholder="Kategori produk">
+        <select id="edit-car-type-add" style="width:100%; box-sizing:border-box; padding:8px; border:1px solid #ddd; border-radius:8px;">
+          <option value="">-- Pilih Tipe Mobil --</option>
+          <option value="ertiga">Ertiga</option>
+          <option value="jimny">Jimny</option>
+          <option value="grandVitara">Grand Vitara</option>
+          <option value="baleno">Baleno</option>
+          <option value="ignis">Ignis</option>
+          <option value="carry">Carry</option>
+          <option value="apv">APV</option>
+        </select>
+
 
     </div>
 
@@ -88,6 +151,7 @@
           <th>Part</th>
           <th>Harga</th>
           <th>Kategori</th>
+          <th>Tipe Mobil</th>
           <th>Aksi</th>
         </tr>
       </thead>

@@ -1,22 +1,5 @@
-const { createClient } = supabase
-
-const db = createClient(
-    'https://frziffueiuosikmhyoae.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyemlmZnVlaXVvc2lrbWh5b2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MTY0MDgsImV4cCI6MjA5NTI5MjQwOH0._G4TlPRL4EUps7qOWudkAcmUcKcPc42Q3kEtm2bQdhA'
-  )
-
 document.addEventListener('DOMContentLoaded', function() {
     const mobileMenu = document.getElementById('mobileMenu');
-    const closeMobileMenu = document.getElementById('closeMobileMenu');
-    const mobileMenuButton = document.querySelector('header button.md\:hidden');
-
-    mobileMenuButton.addEventListener('click', function() {
-        mobileMenu.classList.remove('hidden');
-    });
-
-    closeMobileMenu.addEventListener('click', function() {
-        mobileMenu.classList.add('hidden');
-    });
 
     const accordionBtns = document.querySelectorAll('.accordion-btn');
     accordionBtns.forEach(btn => {
@@ -77,8 +60,10 @@ async function addProduct(){
   const price = document.getElementById("price").value;
   const image = document.getElementById("image").value;
   const kategori = document.getElementById("kategori").value;
+  const car_type = document.getElementById("edit-car-type-add").value;
 
-  if(name === "" || part === "" || price === "" || image === "" || kategori === ""){
+  if(name === "" || part === "" || price === "" || image === "" || kategori === "" || car_type === ""){
+    console.log(name, )
     alert("Semua field wajib diisi");
     return;
   }
@@ -91,6 +76,7 @@ async function addProduct(){
     harga: price,
     url_gambar: image,
     kategori: kategori,
+    TipeMobil: car_type
 })
     .select()
     .single()
@@ -145,14 +131,10 @@ async function renderProducts(){
         <td>
   Rp${product.harga.toLocaleString("id-ID")}
 
-  ${product.diskon > 0 ? `
-    <br>
-    <span style="color:red;">
-      -${product.diskon}%
-    </span>
-  ` : ""}
 </td>
         <td>${product.kategori || "-"}</td>
+
+        <td>${product.TipeMobil || "-"}</td>
       
         <td>
 
@@ -209,39 +191,61 @@ async function deleteProduct(idBarang){
 }
 
 // EDIT
-function editProduct(index){
+let currentEditIndex = null;
 
-  console.log(index)
+function editProduct(index) {
+  console.log(index);
   const product = products[index];
-  const name =
-  prompt("Edit Nama",product.name);
+  currentEditIndex = index;
 
-  const part =
-  prompt("Edit Part",product.part);
+  document.getElementById("edit-name").value = product.nama_barang;
+  document.getElementById("edit-part").value = product.part;
+  document.getElementById("edit-price").value = product.harga;
+  document.getElementById("edit-image").value = product.url_gambar;
+  document.getElementById("edit-category").value = product.kategori;
+  document.getElementById("edit-car-type").value = product.TipeMobil || "";
 
-  const price =
-  prompt("Edit Harga",product.price);
-
-  const image =
-  prompt("Edit URL Gambar",product.image);
-
-  if(name && part && price && image){
-
-    products[index] = {
-      name,
-      part,
-      price,
-      image
-    };
-
-    saveProducts();
-
-    renderProducts();
-
-  }
-
+  const modal = document.getElementById("editModal");
+  modal.style.display = "flex";
 }
 
+function closeEditModal() {
+  document.getElementById("editModal").style.display = "none";
+  currentEditIndex = null;
+}
+
+async function saveEditProduct() {
+  const name = document.getElementById("edit-name").value;
+  const part = document.getElementById("edit-part").value;
+  const price = document.getElementById("edit-price").value;
+  const image = document.getElementById("edit-image").value;
+  const category = document.getElementById("edit-category").value;
+  const car_type = document.getElementById("edit-car-type").value;
+
+  if (name && part && price && image) {
+    const { data, error } = await db
+      .from("barang")
+      .update({
+        nama_barang: name,
+        part: part,
+        harga: price,
+        url_gambar: image,
+        kategori: category,
+        TipeMobil: car_type
+      })
+      .eq("id_barang", products[currentEditIndex].id_barang);
+
+    if (error) {
+      console.error("Gagal update:", error);
+      return;
+    }
+
+    products.push(data)
+
+    renderProducts();
+    closeEditModal();
+  }
+}
 // LOGOUT
 function logout(){
 
@@ -250,6 +254,83 @@ function logout(){
   window.location.href =
   "login.html";
 
+}
+
+document.getElementById("tipe-mobil")
+  .addEventListener("change", function () {
+    filterTipeMobil(this.value);
+  });
+
+async function filterTipeMobil(tipeMobil) {
+  try {
+    let query = db.from("barang").select("*");
+
+    if (tipeMobil !== "all") {
+      query = query.ilike("TipeMobil", tipeMobil);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.log("Error filter:", error);
+      return;
+    }
+
+    productsData = data;
+    featuredProducts.innerHTML = "";
+
+    if (!data || data.length === 0) {
+      featuredProducts.innerHTML = `
+        <div class="text-center py-10 col-span-full">
+          <h2 class="text-xl font-bold">
+            Tidak ada produk untuk tipe ${tipeMobil}
+          </h2>
+        </div>
+      `;
+      return;
+    }
+
+    data.forEach(product => {
+      featuredProducts.innerHTML += `
+        <div class="part-card">
+          <div class="card-img">
+            <img src="${product.url_gambar}">
+          </div>
+
+          <div class="card-body">
+            <h3>${product.nama_barang}</h3>
+
+            <p class="part-no">
+              Part No: ${product.part || "-"}
+            </p>
+
+            <div class="card-footer">
+              <div class="harga">
+                Rp${Number(product.harga).toLocaleString("id-ID")}
+              </div>
+
+              <button class="btn-add"
+                onclick="addToCart(${product.id_barang})">
+                <i class="fas fa-cart-plus"></i>
+                Tambah
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    // reset tombol lihat semua
+    isShowAll = false;
+    document.getElementById("btnLihatSemua").innerText = "Lihat Semua";
+
+    // scroll ke produk
+    document.getElementById("featuredProducts")
+      .scrollIntoView({ behavior: "smooth" });
+
+  } catch (err) {
+    console.log("Error:", err);
+  }
 }
 
 renderProducts();

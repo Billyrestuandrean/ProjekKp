@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar Akun</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background:
+        linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.7)),
+        url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1400');
+      background-size: cover;
+      font-family: Arial;
+    }
+
+    .signup-box {
+      width: 400px;
+      background: rgba(255,255,255,.1);
+      backdrop-filter: blur(15px);
+      padding: 40px;
+      border-radius: 20px;
+      color: white;
+      box-shadow: 0 10px 30px rgba(0,0,0,.3);
+      animation: show .7s ease;
+    }
+
+    @keyframes show {
+      from {
+        opacity: 0;
+        transform: translateY(-40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .signup-box h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      outline: none;
+      color: #004080;
+      box-sizing: border-box;
+      transition: box-shadow .2s;
+    }
+
+    .input-group input:focus {
+      box-shadow: 0 0 0 3px rgba(0, 149, 255, 0.45);
+    }
+
+    .input-group .toggle-pw {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #888;
+      font-size: 15px;
+    }
+
+    .signup-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: #005bac;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: .3s;
+      margin-bottom: 15px;
+    }
+
+    .signup-btn:hover {
+      background: #004080;
+    }
+
+    .signup-btn:disabled {
+      background: #3a7abf;
+      cursor: not-allowed;
+    }
+
+    .alert {
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: none;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .alert.error {
+      background: #ef4444;
+    }
+
+    .alert.success {
+      background: #22c55e;
+    }
+
+    .password-strength {
+      height: 4px;
+      border-radius: 4px;
+      margin-top: 6px;
+      transition: all .3s;
+      background: #ddd;
+      overflow: hidden;
+    }
+
+    .password-strength .bar {
+      height: 100%;
+      border-radius: 4px;
+      transition: width .3s, background .3s;
+      width: 0%;
+    }
+
+    .strength-label {
+      font-size: 11px;
+      margin-top: 4px;
+      color: rgba(255,255,255,.7);
+      min-height: 14px;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .login-link a {
+      color: #0095ff;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color .3s;
+    }
+
+    .login-link a:hover {
+      color: #0077cc;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="signup-box">
+  <h1>
+    <i class="fas fa-user-plus"></i>
+    Buat Akun Baru
+  </h1>
+
+  <div class="alert error" id="errorMsg"></div>
+  <div class="alert success" id="successMsg"></div>
+
+  <form onsubmit="signup(event)">
+
+    <div class="input-group">
+      <input
+        type="text"
+        id="username"
+        placeholder="Username"
+        autocomplete="username"
+        required>
+    </div>
+
+    <div class="input-group">
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        autocomplete="new-password"
+        oninput="checkStrength(this.value)"
+        required>
+      <span class="toggle-pw" onclick="toggleVisibility('password', this)">
+        <i class="fas fa-eye"></i>
+      </span>
+      <div class="password-strength"><div class="bar" id="strengthBar"></div></div>
+      <div class="strength-label" id="strengthLabel"></div>
+    </div>
+
+    <div class="input-group">
+      <input
+        type="password"
+        id="confirmPassword"
+        placeholder="Konfirmasi Password"
+        autocomplete="new-password"
+        required>
+      <span class="toggle-pw" onclick="toggleVisibility('confirmPassword', this)">
+        <i class="fas fa-eye"></i>
+      </span>
+    </div>
+
+    <button class="signup-btn" id="signupBtn" type="submit">
+      Daftar
+    </button>
+
+  </form>
+
+  <div class="login-link">
+    Sudah punya akun? <a href="login.html">Masuk di sini</a>
+  </div>
+</div>
+
+<script>
+  const { createClient } = supabase;
+
+  const db = createClient(
+    'https://frziffueiuosikmhyoae.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyemlmZnVlaXVvc2lrbWh5b2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MTY0MDgsImV4cCI6MjA5NTI5MjQwOH0._G4TlPRL4EUps7qOWudkAcmUcKcPc42Q3kEtm2bQdhA'
+  );
+
+  function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.style.display = 'block';
+    document.getElementById('successMsg').style.display = 'none';
+  }
+
+  function showSuccess(msg) {
+    const el = document.getElementById('successMsg');
+    el.textContent = msg;
+    el.style.display = 'block';
+    document.getElementById('errorMsg').style.display = 'none';
+  }
+
+  function hideAlerts() {
+    document.getElementById('errorMsg').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'none';
+  }
+
+  function toggleVisibility(inputId, iconEl) {
+    const input = document.getElementById(inputId);
+    const icon  = iconEl.querySelector('i');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+      input.type = 'password';
+      icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+  }
+
+  function checkStrength(val) {
+    const bar   = document.getElementById('strengthBar');
+    const label = document.getElementById('strengthLabel');
+    if (!val) {
+      bar.style.width = '0%';
+      label.textContent = '';
+      return;
+    }
+    let score = 0;
+    if (val.length >= 8)              score++;
+    if (/[A-Z]/.test(val))            score++;
+    if (/[0-9]/.test(val))            score++;
+    if (/[^A-Za-z0-9]/.test(val))     score++;
+
+    const levels = [
+      { pct: '25%', color: '#ef4444', text: 'Sangat lemah' },
+      { pct: '50%', color: '#f97316', text: 'Lemah' },
+      { pct: '75%', color: '#eab308', text: 'Cukup kuat' },
+      { pct: '100%', color: '#22c55e', text: 'Kuat' },
+    ];
+    const lvl = levels[score - 1] || levels[0];
+    bar.style.width      = lvl.pct;
+    bar.style.background = lvl.color;
+    label.textContent    = lvl.text;
+  }
+
+  async function signup(event) {
+    event.preventDefault();
+    hideAlerts();
+
+    const username  = document.getElementById('username').value.trim();
+    const password  = document.getElementById('password').value;
+    const confirm   = document.getElementById('confirmPassword').value;
+    const btn       = document.getElementById('signupBtn');
+
+    // Validasi sisi klien
+    if (username.length < 3) {
+      return showError('Username minimal 3 karakter.');
+    }
+    if (password.length < 6) {
+      return showError('Password minimal 6 karakter.');
+    }
+    if (password !== confirm) {
+      return showError('Password dan konfirmasi password tidak cocok.');
+    }
+
+    btn.disabled  = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mendaftar...';
+
+    // Cek apakah username sudah dipakai
+    const { data: existing, error: checkErr } = await db
+      .from('User')
+      .select('id_admin')
+      .eq('username', username);
+
+    if (checkErr) {
+        console.log(checkErr)
+      showError('Terjadi kesalahan. Coba lagi.');
+      btn.disabled  = false;
+      btn.innerHTML = 'Daftar';
+      return;
+    }
+
+    if (existing && existing.length > 0) {
+      showError('Username sudah digunakan. Pilih username lain.');
+      btn.disabled  = false;
+      btn.innerHTML = 'Daftar';
+      return;
+    }
+
+// Tentukan role berdasarkan username
+const role = username.toLowerCase().includes('admin') ? 'admin' : 'user';
+
+// Simpan user baru
+const { error: insertErr } = await db
+  .from('User')
+  .insert([{ username, password, role,nama_user: username }]);
+
+if (insertErr) {
+  showError('Gagal mendaftar. Silakan coba lagi.');
+  console.error(insertErr);
+} else {
+  showSuccess('Akun berhasil dibuat! Mengarahkan ke halaman login...');
+  setTimeout(() => {
+    window.location.href = 'login.html';
+  }, 2000);
+}
+    btn.disabled  = false;
+    btn.innerHTML = 'Daftar';
+  }
+</script>
+
+</body>
+</html>

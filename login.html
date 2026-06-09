@@ -3,104 +3,120 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Admin</title>
+  <title>Halaman Login</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
 
   <link rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
+<style>
+  body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:
+    linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.7)),
+    url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1400');
+    background-size:cover;
+    font-family:Arial;
+  }
 
-    body{
-      margin:0;
-      height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      background:
-      linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.7)),
-      url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1400');
-      background-size:cover;
-      font-family:Arial;
+  .login-box{
+    width:400px;
+    background:rgba(255,255,255,.1);
+    backdrop-filter:blur(15px);
+    padding:40px;
+    border-radius:20px;
+    color:white;
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+    animation:show .7s ease;
+  }
+
+  @keyframes show{
+    from{
+      opacity:0;
+      transform:translateY(-40px);
     }
-
-    .login-box{
-      width:400px;
-      background:rgba(255,255,255,.1);
-      backdrop-filter:blur(15px);
-      padding:40px;
-      border-radius:20px;
-      color:white;
-      box-shadow:0 10px 30px rgba(0,0,0,.3);
-      animation:show .7s ease;
+    to{
+      opacity:1;
+      transform:translateY(0);
     }
+  }
 
-    @keyframes show{
-      from{
-        opacity:0;
-        transform:translateY(-40px);
-      }
-      to{
-        opacity:1;
-        transform:translateY(0);
-      }
-    }
+  .login-box h1{
+    text-align:center;
+    margin-bottom:30px;
+  }
 
-    .login-box h1{
-      text-align:center;
-      margin-bottom:30px;
-    }
+  .input-group{
+    margin-bottom:20px;
+    position:relative;
+  }
 
-    .input-group{
-      margin-bottom:20px;
-      position:relative;
-    }
+  .input-group input{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    outline:none;
+    color: #004080;
+  }
 
-    .input-group input{
-      width:100%;
-      padding:14px;
-      border:none;
-      border-radius:10px;
-      outline:none;
-      color: #004080;
-    }
+  .login-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:#005bac;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+    margin-bottom:15px;
+  }
 
-    .login-btn{
-      width:100%;
-      padding:14px;
-      border:none;
-      border-radius:10px;
-      background:#005bac;
-      color:white;
-      font-weight:bold;
-      cursor:pointer;
-      transition:.3s;
-    }
+  .login-btn:hover{
+    background:#004080;
+  }
 
-    .login-btn:hover{
-      background:#004080;
-    }
+  .error{
+    background:#ef4444;
+    padding:12px;
+    border-radius:10px;
+    margin-bottom:20px;
+    display:none;
+    text-align:center;
+  }
 
-    .error{
-      background:#ef4444;
-      padding:12px;
-      border-radius:10px;
-      margin-bottom:20px;
-      display:none;
-      text-align:center;
-    }
+  .signup-link {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+  }
 
-  </style>
+  .signup-link a {
+    color: #0095ff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color .3s;
+  }
+
+  .signup-link a:hover {
+    color: #0077cc;
+    text-decoration: underline;
+  }
+</style>
 </head>
 
 <body>
 
 <div class="login-box">
-
   <h1>
     <i class="fas fa-user-shield"></i>
-    Admin Login
+    Selamat Datang
   </h1>
 
   <div class="error" id="errorMsg">
@@ -108,31 +124,32 @@
   </div>
 
   <form onsubmit="login(event)">
-
     <div class="input-group">
       <input
-      type="text"
-      id="username"
-      placeholder="Username"
-      required>
+        type="text"
+        id="username"
+        placeholder="Username"
+        required>
     </div>
 
     <div class="input-group">
       <input
-      type="password"
-      id="password"
-      placeholder="Password"
-      required>
+        type="password"
+        id="password"
+        placeholder="Password"
+        required>
     </div>
-
 
     <button class="login-btn" id="loginBtn">
       Login
     </button>
-
   </form>
 
+  <div class="signup-link">
+    Belum punya akun? <a href="signup.html">Daftar di sini</a>
+  </div>
 </div>
+
 
 <script>
     const { createClient } = supabase
@@ -157,7 +174,7 @@ async function login(event){
     
     // Cek ke tabel "admin" di Supabase
     const { data, error: dbError } = await db
-    .from("admin")
+    .from("User")
     .select("*")
     .eq("username", username)
     .eq("password", password)
@@ -175,7 +192,16 @@ async function login(event){
     }else{
 
       localStorage.setItem("isLogin", "true");
-      window.location.href = "dashboard.html";
+      localStorage.setItem("role", data[0].role);
+      if(data[0].role === "admin"){
+        
+        window.location.href = "dashboard.html";
+      }else {
+        
+        localStorage.setItem("id_pelanggan",data[0].id_admin );
+        window.location.href = "index.html";
+
+      }
 
     }
 

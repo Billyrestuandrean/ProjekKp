@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
+        html{
+            scroll-behavior: smooth;
+        }
     /* ============================================
        RESPONSIVE STYLES - MOBILE FIRST
        ============================================ */
@@ -438,7 +441,7 @@
     </div>
 </div>
  
-<!-- Header -->
+<!-- Header --> 
 <header style="z-index: 9999;" >
     <div class="header-inner">
         <a href="#" class="logo">
@@ -472,9 +475,25 @@
         
             </a>
 
-    <a class="btn-add" style="color: white; font-size: 18px; font-weight: 500;" href="/login.html">
-     Login Admin
-    </a>
+<a class="btn-add" id="authBtn" style="color: white; font-size: 18px; font-weight: 500;" href="/login.html">
+  Login
+</a>
+
+<script>
+  const authBtn = document.getElementById('authBtn');
+  const isLogin = localStorage.getItem('isLogin');
+
+  if (isLogin === 'true') {
+    authBtn.textContent = 'Logout';
+    authBtn.href = '#';
+    authBtn.onclick = function() {
+      localStorage.removeItem('isLogin');
+      localStorage.removeItem('role');
+      window.location.href = '/login.html';
+    };
+  }
+</script>
+    
 
 
 </div>
@@ -500,9 +519,10 @@
             <h1>Sparepart Suzuki<br></h1>
             <p>Suku cadang original langsung dari pabrik Suzuki — cocok sempurna, performa optimal untuk kendaraan Anda.</p>
             <div class="hero-btns">
-                <a href="#" class="btn-white">Belanja Sekarang <i class="fas fa-arrow-right"></i></a>
-                <a href="#" class="btn-outline">Cari Berdasarkan Model</a>
-            </div>
+<a href="#products" class="btn-white" onclick="showAllProducts()">
+  Belanja Sekarang <i class="fas fa-arrow-right"></i>
+</a>                
+<a href="#tipe" class="btn-outline" onclick="hideAllProducts()">Cari Berdasarkan Tipe</a>            </div>
         </div>
         <div class="hero-image">
         
@@ -511,7 +531,7 @@
 </section>
  
 <!-- Finder -->
-<div class="finder">
+<div class="finder" id="tipe">
     <div class="finder-inner">
         <div class="finder-title"><i class="fas fa-search-plus"></i> &nbsp;Temukan Part untuk Kendaraan Anda</div>
         <div class="finder-field">
@@ -533,7 +553,7 @@
  
 
 <!-- Featured Products -->
-<section class="section">
+<section id="products" class="section">
     <div class="section-inner">
         <div class="section-head">
             <h2 class="section-title">Produk <span>Utama</span></h2>
@@ -656,7 +676,7 @@
 
     </div>
 
-    <!-- MAP KANAN -->
+    <!-- MAP KANAN --> 
     <div style="flex: 2 1 400px ; border-radius: 12px; overflow: hidden; min-height: 460px;">
       <div id="map" style="width: 100%; height: 100%; min-height: 460px;"></div>
     </div>
@@ -739,6 +759,12 @@ const db = createClient(
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyemlmZnVlaXVvc2lrbWh5b2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MTY0MDgsImV4cCI6MjA5NTI5MjQwOH0._G4TlPRL4EUps7qOWudkAcmUcKcPc42Q3kEtm2bQdhA'
   )
 
+function hideAllProducts() {
+  const btnLihatSemua = document.getElementById('btnLihatSemua');
+  if (btnLihatSemua.textContent.trim() === 'Tampilkan Sedikit') {
+    toggleProducts();
+  }
+}
 
 const featuredProducts =
 document.getElementById("featuredProducts");
@@ -837,6 +863,11 @@ window.onload = async function () {
 
 
 function addToCart(id) {
+ // Cek login dulu
+    if (localStorage.getItem('isLogin') !== 'true') {
+        window.location.href = '/login.html';
+        return;
+    }
 
     const product = productsData.find(
         item => item.id_barang == id
@@ -1035,6 +1066,14 @@ console.log(productsData);
   .addEventListener("change", function () {
     filterTipeMobil(this.value);
   });
+
+  function showAllProducts() {
+  // Trigger lihat semua hanya jika belum ditampilkan
+  const btnLihatSemua = document.getElementById('btnLihatSemua');
+  if (btnLihatSemua.textContent.trim() === 'Lihat Semua') {
+    toggleProducts();
+  }
+}
 
 async function filterTipeMobil(tipeMobil) {
   try {

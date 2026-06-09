@@ -90,11 +90,11 @@
 //                 <td>${product.part}</td>
 //                 <td>${product.price}</td>
 //                 <td>
-//                     <button class="btn-edit" onclick="editProduct(${index})">
+//                     <button class="btn-edit" onclick="editProduct(${index})"> 
 //                         Edit
 //                     </button>
 
-//                     <button class="btn-delete" onclick="deleteProduct(${index})">
+//                     <button class="btn-delete" onclick="deleteProduct(${index})"> 
 //                         Hapus
 //                     </button>
 //                 </td>
@@ -199,7 +199,7 @@ function toggleDashboard(){
                         Rp${Number(product.harga).toLocaleString("id-ID")}
                     </div>
 
-                    <button class="btn-add"
+                    <button class="btn-add" 
                         onclick="addToCart(${product.id_barang})">
                         <i class="fas fa-cart-plus"></i>
                         Tambah

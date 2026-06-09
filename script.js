@@ -1,4 +1,4 @@
-const { createClient } = supabase
+const { createClient } = supabase   
 
 const db = createClient(
     'https://frziffueiuosikmhyoae.supabase.co',
@@ -60,7 +60,7 @@ if(localStorage.getItem("isLogin") !== "true"){
 let products = []
 
 
-async function addProduct(){
+async function addProduct(){ 
 
   const name  = document.getElementById("name").value;
   const part  = document.getElementById("part").value;
@@ -257,6 +257,7 @@ async function saveEditProduct() {
 function logout(){
 
   localStorage.removeItem("isLogin");
+  localStorage.removeItem("role");
 
   window.location.href =
   "index.html";

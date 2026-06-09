@@ -7,7 +7,15 @@
   <title>Admin Dashboard</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-
+  <script>
+  (function() {
+    const role = localStorage.getItem('role');
+    if (role !== 'admin') {
+      // Redirect ke halaman login atau tampilkan pesan
+      window.location.replace('login.html');
+    }
+  })();
+</script>
   <link rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

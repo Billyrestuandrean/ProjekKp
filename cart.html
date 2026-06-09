@@ -5,7 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Keranjang</title>
-
+    <script>
+    (function() {
+        const isLogin = localStorage.getItem('isLogin');
+        if (!isLogin) {
+        // Redirect ke halaman login atau tampilkan pesan
+        window.location.replace('login.html');
+        }
+    })();
+    </script>
 <script src="https://cdn.tailwindcss.com"></script>
 
 <link rel="stylesheet"

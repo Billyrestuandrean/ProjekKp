@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,800 +10,866 @@
     <link rel="stylesheet" href="./style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        html{
+        html {
             scroll-behavior: smooth;
         }
-    /* ============================================
+
+        /* ============================================
        RESPONSIVE STYLES - MOBILE FIRST
        ============================================ */
 
-    /* --- TOPBAR --- */
-    .topbar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        padding: 6px 12px;
-        font-size: 11px;
-    }
-    .topbar > div {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        align-items: center;
-    }
-    @media (max-width: 640px) {
+        /* --- TOPBAR --- */
         .topbar {
-            flex-direction: column;
-            align-items: flex-start;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
             padding: 6px 12px;
-            gap: 4px;
-        }
-        .topbar > div {
-            gap: 10px;
-        }
-        .topbar a {
             font-size: 11px;
         }
-    }
 
-    /* --- HEADER --- */
-    .header-inner {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 10px;
-        padding: 12px 16px;
-    }
-
-    .header-actions {
-        display: flex;
-        width: 40%;
-        justify-content: space-between;
-    }
-    @media (max-width: 768px) {
-        .header-inner {
+        .topbar>div {
+            display: flex;
             flex-wrap: wrap;
             gap: 8px;
+            align-items: center;
         }
-        .logo {
-            flex-shrink: 0;
+
+        @media (max-width: 640px) {
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 6px 12px;
+                gap: 4px;
+            }
+
+            .topbar>div {
+                gap: 10px;
+            }
+
+            .topbar a {
+                font-size: 11px;
+            }
         }
-        .search-wrap {
-            order: 3;
-            width: 100%;
-            flex: 0 0 100%;
+
+        /* --- HEADER --- */
+        .header-inner {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 12px 16px;
         }
+
         .header-actions {
-            margin-left: auto;
-
+            display: flex;
+            width: 40%;
+            justify-content: space-between;
         }
-    }
-    @media (max-width: 480px) {
-        .logo-text {
-            font-size: 14px;
-        }
-    }
 
-    /* --- NAVIGATION --- */
-    nav .nav-inner {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 4px;
-        padding: 6px 12px;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-    }
-    nav .nav-inner::-webkit-scrollbar {
-        display: none;
-    }
-    nav .nav-inner a,
-    nav .nav-inner .dropdown > a {
-        white-space: nowrap;
-        font-size: 13px;
-        padding: 6px 10px;
-    }
-    @media (max-width: 640px) {
+        @media (max-width: 768px) {
+            .header-inner {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .logo {
+                flex-shrink: 0;
+            }
+
+            .search-wrap {
+                order: 3;
+                width: 100%;
+                flex: 0 0 100%;
+            }
+
+            .header-actions {
+                margin-left: auto;
+
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-text {
+                font-size: 14px;
+            }
+        }
+
+        /* --- NAVIGATION --- */
         nav .nav-inner {
-            flex-wrap: nowrap;
-            overflow-x: auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
             padding: 6px 12px;
-            gap: 2px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
         }
-        .dropdown-menu {
-            position: fixed;
-            left: 0;
-            right: 0;
-            width: 100%;
-            z-index: 999;
-        }
-    }
 
-    /* --- HERO --- */
-    .hero-inner {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        padding: 32px 16px;
-    }
-    .hero-content {
-        flex: 1 1 280px;
-        min-width: 0;
-    }
-    .hero-image {
-        flex: 1 1 200px;
-        min-width: 0;
-    }
-    @media (max-width: 640px) {
-        .hero-inner {
-            flex-direction: column;
-            padding: 24px 16px;
-            text-align: center;
+        nav .nav-inner::-webkit-scrollbar {
+            display: none;
         }
-        .hero-content h1 {
-            font-size: clamp(24px, 7vw, 42px);
-        }
-        .hero-btns {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-        .hero-btns a {
-            width: 100%;
-            max-width: 280px;
-            text-align: center;
-        }
-    }
 
-    /* --- FINDER --- */
-    .finder-inner {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        align-items: center;
-        padding: 16px;
-    }
-    .finder-title {
-        flex: 1 1 100%;
-    }
-    .finder-field {
-        flex: 1 1 160px;
-        min-width: 0;
-    }
-    .finder-field select {
-        width: 100%;
-    }
-    .btn-find {
-        flex-shrink: 0;
-    }
-    @media (max-width: 480px) {
-        .finder-inner {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 10px;
-        }
-        .finder-field {
-            flex: 1 1 auto;
-        }
-        .btn-find {
-            width: 100%;
-        }
-    }
-
-    /* --- PRODUCTS GRID --- */
-    .products-grid {
-        display: grid;
-        gap: 16px;
-    }
-    @media (min-width: 1024px) {
-        .products-grid {
-            grid-template-columns: repeat(4, 1fr);
-        }
-    }
-    @media (min-width: 640px) and (max-width: 1023px) {
-        .products-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-    @media (max-width: 639px) {
-        .products-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-    }
-    @media (max-width: 380px) {
-        .products-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    /* --- PRODUCT CARD --- */
-    @media (max-width: 639px) {
-        .part-card .card-img img {
-            width: 100%;
-            height: 130px;
-            object-fit: cover;
-        }
-        .part-card .card-body h3 {
+        nav .nav-inner a,
+        nav .nav-inner .dropdown>a {
+            white-space: nowrap;
             font-size: 13px;
+            padding: 6px 10px;
         }
-        .part-card .part-no {
-            font-size: 11px;
-        }
-        .part-card .card-footer {
-            flex-direction: column;
-            gap: 8px;
-            align-items: flex-start;
-        }
-        .part-card .harga {
-            font-size: 14px;
-        }
-        .part-card .btn-add {
-            width: 100%;
-            justify-content: center;
-            font-size: 12px;
-            padding: 7px 10px;
-        }
-    }
 
-    /* --- SECTION INNER --- */
-    .section-inner {
-        padding-left: 16px;
-        padding-right: 16px;
-    }
-    @media (min-width: 768px) {
-        .section-inner {
-            padding-left: 32px;
-            padding-right: 32px;
-        }
-    }
+        @media (max-width: 640px) {
+            nav .nav-inner {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                padding: 6px 12px;
+                gap: 2px;
+            }
 
-    /* --- SECTION HEAD --- */
-    .section-head {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-        margin-bottom: 16px;
-    }
-    @media (max-width: 480px) {
-        .section-title {
-            font-size: clamp(18px, 5vw, 26px);
+            .dropdown-menu {
+                position: fixed;
+                left: 0;
+                right: 0;
+                width: 100%;
+                z-index: 999;
+            }
         }
-    }
 
-    /* --- WHY GRID --- */
-    .why-grid {
-        display: grid;
-        gap: 16px;
-    }
-    @media (min-width: 768px) {
-        .why-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-    @media (max-width: 767px) {
-        .why-grid {
-            grid-template-columns: 1fr;
-        }
-        .why-card {
+        /* --- HERO --- */
+        .hero-inner {
             display: flex;
-            gap: 16px;
-            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 32px 16px;
         }
-        .why-icon {
+
+        .hero-content {
+            flex: 1 1 280px;
+            min-width: 0;
+        }
+
+        .hero-image {
+            flex: 1 1 200px;
+            min-width: 0;
+        }
+
+        @media (max-width: 640px) {
+            .hero-inner {
+                flex-direction: column;
+                padding: 24px 16px;
+                text-align: center;
+            }
+
+            .hero-content h1 {
+                font-size: clamp(24px, 7vw, 42px);
+            }
+
+            .hero-btns {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .hero-btns a {
+                width: 100%;
+                max-width: 280px;
+                text-align: center;
+            }
+        }
+
+        /* --- FINDER --- */
+        .finder-inner {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .finder-title {
+            flex: 1 1 100%;
+        }
+
+        .finder-field {
+            flex: 1 1 160px;
+            min-width: 0;
+        }
+
+        .finder-field select {
+            width: 100%;
+        }
+
+        .btn-find {
             flex-shrink: 0;
         }
-    }
 
-    /* --- NEWSLETTER --- */
-    .nl-form {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        justify-content: center;
-    }
-    .nl-form input {
-        flex: 1 1 220px;
-        min-width: 0;
-        max-width: 360px;
-    }
-    @media (max-width: 480px) {
-        .nl-form {
-            flex-direction: column;
-            align-items: stretch;
-            padding: 0 16px;
-        }
-        .nl-form input,
-        .nl-form button {
-            width: 100%;
-            max-width: 100%;
-        }
-        .newsletter {
-            padding: 32px 16px;
-            text-align: center;
-        }
-        .newsletter h2 {
-            font-size: clamp(18px, 5vw, 28px);
-        }
-    }
+        @media (max-width: 480px) {
+            .finder-inner {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
 
-    /* --- FOOTER --- */
-    .footer-inner {
-        padding: 32px 16px 16px;
-    }
-    .footer-grid {
-        display: grid;
-        gap: 24px;
-    }
-    @media (min-width: 1024px) {
-        .footer-grid {
-            grid-template-columns: repeat(4, 1fr);
-        }
-    }
-    @media (min-width: 640px) and (max-width: 1023px) {
-        .footer-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-    @media (max-width: 639px) {
-        .footer-grid {
-            grid-template-columns: 1fr;
-        }
-        .footer-col h4 {
-            font-size: 14px;
-        }
-        .footer-col p,
-        .footer-col li,
-        .footer-col a {
-            font-size: 13px;
-        }
-    }
+            .finder-field {
+                flex: 1 1 auto;
+            }
 
-    /* --- FOOTER BOTTOM --- */
-    .footer-bottom {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        align-items: center;
-        justify-content: space-between;
-        padding-top: 16px;
-        margin-top: 16px;
-    }
-    .payment-icons {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-    }
-    @media (max-width: 480px) {
-        .footer-bottom {
-            flex-direction: column;
+            .btn-find {
+                width: 100%;
+            }
+        }
+
+        /* --- PRODUCTS GRID --- */
+        .products-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        @media (min-width: 1024px) {
+            .products-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (min-width: 640px) and (max-width: 1023px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 639px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* --- PRODUCT CARD --- */
+        @media (max-width: 639px) {
+            .part-card .card-img img {
+                width: 100%;
+                height: 130px;
+                object-fit: cover;
+            }
+
+            .part-card .card-body h3 {
+                font-size: 13px;
+            }
+
+            .part-card .part-no {
+                font-size: 11px;
+            }
+
+            .part-card .card-footer {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+
+            .part-card .harga {
+                font-size: 14px;
+            }
+
+            .part-card .btn-add {
+                width: 100%;
+                justify-content: center;
+                font-size: 12px;
+                padding: 7px 10px;
+            }
+        }
+
+        /* --- SECTION INNER --- */
+        .section-inner {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .section-inner {
+                padding-left: 32px;
+                padding-right: 32px;
+            }
+        }
+
+        /* --- SECTION HEAD --- */
+        .section-head {
+            display: flex;
+            flex-wrap: wrap;
             align-items: center;
-            text-align: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 16px;
         }
-        .footer-bottom p {
-            font-size: 12px;
-        }
-    }
 
-    /* --- TOAST --- */
-    @media (max-width: 480px) {
-        #toast {
-            bottom: 12px;
-            right: 12px;
-            left: 12px;
+        @media (max-width: 480px) {
+            .section-title {
+                font-size: clamp(18px, 5vw, 26px);
+            }
         }
-        #toast > div {
-            width: 100%;
+
+        /* --- WHY GRID --- */
+        .why-grid {
+            display: grid;
+            gap: 16px;
         }
-    }
+
+        @media (min-width: 768px) {
+            .why-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 767px) {
+            .why-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .why-card {
+                display: flex;
+                gap: 16px;
+                align-items: flex-start;
+            }
+
+            .why-icon {
+                flex-shrink: 0;
+            }
+        }
+
+        /* --- NEWSLETTER --- */
+        .nl-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .nl-form input {
+            flex: 1 1 220px;
+            min-width: 0;
+            max-width: 360px;
+        }
+
+        @media (max-width: 480px) {
+            .nl-form {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 0 16px;
+            }
+
+            .nl-form input,
+            .nl-form button {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .newsletter {
+                padding: 32px 16px;
+                text-align: center;
+            }
+
+            .newsletter h2 {
+                font-size: clamp(18px, 5vw, 28px);
+            }
+        }
+
+        /* --- FOOTER --- */
+        .footer-inner {
+            padding: 32px 16px 16px;
+        }
+
+        .footer-grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        @media (min-width: 1024px) {
+            .footer-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (min-width: 640px) and (max-width: 1023px) {
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 639px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-col h4 {
+                font-size: 14px;
+            }
+
+            .footer-col p,
+            .footer-col li,
+            .footer-col a {
+                font-size: 13px;
+            }
+        }
+
+        /* --- FOOTER BOTTOM --- */
+        .footer-bottom {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 16px;
+            margin-top: 16px;
+        }
+
+        .payment-icons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        @media (max-width: 480px) {
+            .footer-bottom {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .footer-bottom p {
+                font-size: 12px;
+            }
+        }
+
+        /* --- TOAST --- */
+        @media (max-width: 480px) {
+            #toast {
+                bottom: 12px;
+                right: 12px;
+                left: 12px;
+            }
+
+            #toast>div {
+                width: 100%;
+            }
+        }
     </style>
 </head>
+
 <body>
-<div class="topbar">
-    <div>
-       <a href="https://wa.me/628115663088"
-   target="_blank"
-   class="hover:text-green-400 transition">
-
-    <i class="fas fa-phone-alt"></i>
-    628115663088
-
-</a>
-
-<a href="mailto:Hubertus8899@gmail.com"
-   class="ml-4 hover:text-blue-400 transition">
-
-    <i class="fas fa-envelope"></i>
-    Hubertus8899@gmail.com
-
-</a>
-    </div>
-    <div>
+    <div class="topbar">
         <div>
-    <a href="https://maps.app.goo.gl/aw23vdo3yebMBf2fA?g_st=ic" 
-       target="_blank" 
-       rel="noopener noreferrer">
-        <i class="fas fa-map-marker-alt"></i> Dealer Location
-    </a>
+            <a href="https://wa.me/628115663088" target="_blank" class="hover:text-green-400 transition">
 
-    &nbsp;&nbsp;
+                <i class="fas fa-phone-alt"></i>
+                628115663088
 
-    <a href="https://wa.me/628115663088" 
-   target="_blank" 
-   rel="noopener noreferrer">
-    <i class="fas fa-question-circle"></i> Help Center
-</a>
-</div>
-    </div>
-</div>
- 
-<!-- Header --> 
-<header style="z-index: 9999;" >
-    <div class="header-inner">
-        <a href="#" class="logo">
-            <div class="logo-icon"><i class="fas fa-cog fa-spin" style="animation-duration:4s"></i></div>
-            <div class="logo-text">
-                SUZUKI
-                <span>GENUINE PARTS</span>
-            </div>
-        </a>
- 
-      <div class="search-wrap">
-
-    <input
-        type="text"
-        id="searchInput"
-        placeholder="Cari suku cadang berdasarkan nama atau nomor part..."
-    >
-
-    <button onclick="searchProducts()">
-        <i class="fas fa-search"></i>
-    </button>
-
-</div>
- 
-        <div class="header-actions">
-            <a href="cart.html" style="position:relative">
-        
-                <i class="fas fa-shopping-cart"></i>
-        
-                <span class="cart-badge">0</span>
-        
             </a>
 
-<a class="btn-add" id="authBtn" style="color: white; font-size: 18px; font-weight: 500;" href="/login.html">
-  Login
-</a>
+            <a href="mailto:Hubertus8899@gmail.com" class="ml-4 hover:text-blue-400 transition">
 
-<script>
-  const authBtn = document.getElementById('authBtn');
-  const isLogin = localStorage.getItem('isLogin');
+                <i class="fas fa-envelope"></i>
+                Hubertus8899@gmail.com
 
-  if (isLogin === 'true') {
-    authBtn.textContent = 'Logout';
-    authBtn.href = '#';
-    authBtn.onclick = function() {
-      localStorage.removeItem('isLogin');
-      localStorage.removeItem('role');
-      window.location.href = '/login.html';
-    };
-  }
-</script>
-    
-
-
-</div>
-    </div>
-</header>
- 
-<!-- Navigation -->
-<nav>
-    <div class="nav-inner">
-        <a href="#" data-kategori="aksesoris" onclick="filterKategori(event, 'aksesoris')">Aksesoris</a>
-<a href="#" onclick="filterKategori(event, 'promo')">Promo</a>
-<a href="#" data-kategori="terbaru" onclick="filterKategori(event, 'terbaru')">Terbaru</a>
-<a href="#" data-kategori="terlaris" onclick="filterKategori(event, 'terlaris')">Terlaris</a>
-    </div>
-</nav>
-
- 
-<!-- Hero -->
-<section class="hero">
-    <div class="hero-inner">
-        <div class="hero-content">
-            <div class="hero-tag">&#9733; 100% Genuine Parts</div>
-            <h1>Sparepart Suzuki<br></h1>
-            <p>Suku cadang original langsung dari pabrik Suzuki — cocok sempurna, performa optimal untuk kendaraan Anda.</p>
-            <div class="hero-btns">
-<a href="#products" class="btn-white" onclick="showAllProducts()">
-  Belanja Sekarang <i class="fas fa-arrow-right"></i>
-</a>                
-<a href="#tipe" class="btn-outline" onclick="hideAllProducts()">Cari Berdasarkan Tipe</a>            </div>
+            </a>
         </div>
-        <div class="hero-image">
-        
-        </div>
-    </div>
-</section>
- 
-<!-- Finder -->
-<div class="finder" id="tipe">
-    <div class="finder-inner">
-        <div class="finder-title"><i class="fas fa-search-plus"></i> &nbsp;Temukan Part untuk Kendaraan Anda</div>
-        <div class="finder-field">
-            <label>Tipe</label>
-            <select id="tipe-mobil">
-                <option value="all">All</option>
-                <option value="ertiga">Ertiga</option>
-                <option value="jimny">Jimny</option>
-                <option value="grandVitara">Grand Vitara</option>
-                <option value="baleno">Baleno</option>
-                <option value="ignis">Ignis</option>
-                <option value="carry">Carry</option>
-                <option value="apv">APV</option>
-            </select>
-        </div>
-        <button class="btn-find"><i class="fas fa-search"></i> &nbsp;Cari Part</button>
-    </div>
-</div>
- 
+        <div>
+            <div>
+                <a href="https://maps.app.goo.gl/aw23vdo3yebMBf2fA?g_st=ic" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-map-marker-alt"></i> Dealer Location
+                </a>
 
-<!-- Featured Products -->
-<section id="products" class="section">
-    <div class="section-inner">
-        <div class="section-head">
-            <h2 class="section-title">Produk <span>Utama</span></h2>
-            <a href="javascript:void(0)"
-   id="btnLihatSemua"
-   class="view-all"
-   onclick="toggleProducts()">
+                &nbsp;&nbsp;
 
-    Lihat Semua
-
-</a>
-        </div>
-        <div class="products-grid" id="featuredProducts">
-            
-        </div>
-    </div>
-</section>
-  
-<!-- Why Us -->
-<section class="section why">
-    <div class="section-inner">
-        <div class="section-head">
-            <h2 class="section-title">Mengapa Memilih <span>Suzuki Genuine?</span></h2>
-        </div>
-        <div class="why-grid">
-            <div class="why-card">
-                <div class="why-icon"><i class="fas fa-check-circle"></i></div>
-                <h3>100% Genuine</h3>
-                <p>Langsung dari pabrik Suzuki — cocok sempurna dan performa optimal untuk kendaraan Anda.</p>
-            </div>
-            <div class="why-card">
-                <div class="why-icon"><i class="fas fa-shield-alt"></i></div>
-                <h3>Bergaransi Resmi</h3>
-                <p>Jaga garansi kendaraan Anda tetap berlaku dengan hanya menggunakan sparepart asli Suzuki.</p>
-            </div>
-            <div class="why-card">
-                <div class="why-icon"><i class="fas fa-truck"></i></div>
-                <h3>Pengiriman Cepat</h3>
-                <p>Pengiriman ke seluruh Indonesia dengan opsi ekspres ke dealer resmi terdekat.</p>
+                <a href="https://wa.me/628115663088" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-question-circle"></i> Help Center
+                </a>
             </div>
         </div>
     </div>
-</section>
- 
-<!-- Newsletter -->
-<div class="newsletter" style="background: #1a56a0; padding: 40px 16px;">
-  <div style="max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch; color: #555;">
 
-    <!-- INFO KIRI -->
-    <div style="flex: 1 1 280px; background: #fff; border-radius: 12px; padding: 28px 24px; display: flex; flex-direction: column; gap: 16px; text-align: left;">
-      
-      <div style="display: flex; align-items: center; justify-content: space-between;">
-        <div style="display: flex; flex-direction: column;">
-          <h2 style="font-size: 20px; font-weight: 700; margin: 0 0 6px;">Suzuki Genuine Parts</h2>
-          <span style="background: #1a56a0; color: #fff; font-size: 12px; padding: 4px 12px; border-radius: 20px; font-weight: 500;">
-            ★ Toko Resmi
-          </span>
+    <!-- Header -->
+    <header style="z-index: 9999;">
+        <div class="header-inner">
+            <a href="#" class="logo">
+                <div class="logo-icon"><i class="fas fa-cog fa-spin" style="animation-duration:4s"></i></div>
+                <div class="logo-text">
+                    SUZUKI
+                    <span>GENUINE PARTS</span>
+                </div>
+            </a>
+
+            <div class="search-wrap">
+
+                <input type="text" id="searchInput" placeholder="Cari suku cadang berdasarkan nama atau nomor part...">
+
+                <button onclick="searchProducts()">
+                    <i class="fas fa-search"></i>
+                </button>
+
+            </div>
+
+            <div class="header-actions">
+                <div id="card" style="width: 100%; display: flex; justify-content: space-between;">
+
+                    <a href="cart.html" id="cartIcon" style="position:relative">
+
+                        <i class="fas fa-shopping-cart"></i>
+
+                        <span class="cart-badge">0</span>
+
+                    </a>
+                    <a class="btn-add" id="authBtn" style="color: white; font-size: 18px; font-weight: 500;"
+                        href="/login.html">
+                        Login
+                    </a>
+                </div>
+                <script>
+                    if (localStorage.getItem('isLogin') !== 'true') {
+                        document.getElementById('cartIcon').style.display = 'none';
+                        document.querySelector('.header-actions #card').style.justifyContent = 'end';
+
+                    }
+                </script>
+
+
+
+                <script>
+                    const authBtn = document.getElementById('authBtn');
+                    const isLogin = localStorage.getItem('isLogin');
+
+                    if (isLogin === 'true') {
+                        authBtn.textContent = 'Logout';
+                        authBtn.href = '#';
+                        authBtn.onclick = function () {
+                            localStorage.removeItem('isLogin');
+                            localStorage.removeItem('role');
+                            window.location.href = '/login.html';
+                        };
+                    }
+                </script>
+
+
+
+            </div>
         </div>
-        <i class="fas fa-map-marker-alt" style="font-size: 24px; color: #1a56a0;"></i>
-      </div>
+    </header>
 
-      <hr style="border: none; border-top: 1px solid #eee; margin: 0;">
-
-      <!-- Alamat -->
-      <div style="background: #f9f9f9; border-radius: 8px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start;">
-        <i class="fas fa-map-marker-alt" style="color: #1a56a0; margin-top: 2px; flex-shrink: 0;"></i>
-        <div style="display: flex; flex-direction: column;">
-          <p style="font-weight: 600; margin: 0 0 4px; font-size: 14px;">Alamat</p>
-          <p style="font-size: 13px; color: #555; margin: 0; line-height: 1.5;">
-            Lengkong Gudang Tim.,<br>Kec. Serpong, Kota Tangerang Selatan,<br>Banten 15310
-          </p>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-inner">
+            <a href="#" data-kategori="aksesoris" onclick="filterKategori(event, 'aksesoris')">Aksesoris</a>
+            <a href="#" onclick="filterKategori(event, 'promo')">Promo</a>
+            <a href="#" data-kategori="terbaru" onclick="filterKategori(event, 'terbaru')">Terbaru</a>
+            <a href="#" data-kategori="terlaris" onclick="filterKategori(event, 'terlaris')">Terlaris</a>
         </div>
-      </div>
+    </nav>
 
-      <!-- Telepon -->
-      <div style="background: #f9f9f9; border-radius: 8px; padding: 12px 14px; display: flex; gap: 12px; align-items: center;">
-        <i class="fas fa-phone" style="color: #1a56a0; flex-shrink: 0;"></i>
-        <div>
-          <p style="font-weight: 600; margin: 0 0 2px; font-size: 14px;">Telepon</p>
-          <p style="font-size: 13px; color: #555; margin: 0;">+62 811-5663-088</p>
-        </div>
-      </div>
 
-      <!-- Jam Buka -->
-      <div style="background: #f9f9f9; border-radius: 8px; padding: 12px 14px; display: flex; gap: 12px; align-items: center;">
-        <i class="fas fa-clock" style="color: #1a56a0; flex-shrink: 0;"></i>
-        <div>
-          <p style="font-weight: 600; margin: 0 0 2px; font-size: 14px;">Jam Buka</p>
-          <p style="font-size: 13px; color: #555; margin: 0;">08:00 – 17:00</p>
-          <p style="font-size: 12px; color: #1a56a0; margin: 2px 0 0; font-weight: 500;">Senin – Sabtu</p>
-        </div>
-      </div>
-
-      <!-- Email -->
-      <div style="background: #f9f9f9; border-radius: 8px; padding: 12px 14px; display: flex; gap: 12px; align-items: center;">
-        <i class="fas fa-envelope" style="color: #1a56a0; flex-shrink: 0;"></i>
-        <div>
-          <p style="font-weight: 600; margin: 0 0 2px; font-size: 14px;">Email</p>
-          <p style="font-size: 13px; color: #555; margin: 0;">Hubertus8899@gmail.com</p>
-        </div>
-      </div>
-
-      <!-- Tombol -->
-      <a href="https://www.google.com/maps/dir/?api=1&destination=-6.295830,106.679401"
-         target="_blank"
-         style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #1a56a0; color: #fff; text-decoration: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; margin-top: auto;">
-        <i class="fas fa-location-arrow"></i> Petunjuk Arah
-      </a>
-
-      <div style="display: flex; gap: 8px;">
-        <a href="tel:+628115663088"
-           style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; border: 1.5px solid #1a56a0; color: #1a56a0; text-decoration: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600;">
-          <i class="fas fa-phone"></i> Telepon
-        </a>
-        <a href="https://wa.me/628115663088" target="_blank"
-           style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; border: 1.5px solid #25d366; color: #25d366; text-decoration: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600;">
-          <i class="fab fa-whatsapp"></i> WhatsApp
-        </a>
-      </div>
-
-    </div>
-
-    <!-- MAP KANAN --> 
-    <div style="flex: 2 1 400px ; border-radius: 12px; overflow: hidden; min-height: 460px;">
-      <div id="map" style="width: 100%; height: 100%; min-height: 460px;"></div>
-    </div>
-
-  </div>
-</div>
-
-<script>
-  const map = L.map("map").setView([-6.295830, 106.679401], 16);
-
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-  }).addTo(map);
-
-  L.marker([-6.295830, 106.679401])
-    .addTo(map)
-    .bindPopup("<b>Suzuki Genuine Parts</b><br>Lokasi toko kami.")
-    .openPopup();
-</script> 
-<!-- Footer -->
-<footer>
-    <div class="footer-inner">
-        <div class="footer-grid">
-            <div class="footer-col">
-                <h4>Tentang Suzuki Parts</h4>
-                <p>Toko online resmi untuk sparepart dan aksesoris Suzuki asli di Indonesia. Kualitas terjamin langsung dari produsen.</p>
-                <div class="footer-socials">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-content">
+                <div class="hero-tag">&#9733; 100% Genuine Parts</div>
+                <h1>Sparepart Suzuki<br></h1>
+                <p>Suku cadang original langsung dari pabrik Suzuki — cocok sempurna, performa optimal untuk kendaraan
+                    Anda.</p>
+                <div class="hero-btns">
+                    <a href="#products" class="btn-white" onclick="showAllProducts()">
+                        Belanja Sekarang <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <a href="#tipe" class="btn-outline" onclick="hideAllProducts()">Cari Berdasarkan Tipe</a>
                 </div>
             </div>
-            <div class="footer-col">
-                <h4>Tautan Cepat</h4>
-                <ul>
-                    <li><a href="#">Beranda</a></li>
-                    <li><a href="#">Toko</a></li>
-                    <li><a href="#">Promo</a></li>
-                    <li><a href="#">Produk Baru</a></li>
-                    <li><a href="#">Akun Saya</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Layanan Pelanggan</h4>
-                <ul>
-                    <li><a href="#">Hubungi Kami</a></li>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Kebijakan Pengiriman</a></li>
-                    <li><a href="#">Retur & Garansi</a></li>
-                    <li><a href="#">Lacak Pesanan</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Kontak</h4>
-                <ul class="footer-contact">
-                    <li><i class="fas fa-map-marker-alt"></i>Lengkong Gudang Tim.,<br>Kec. Serpong, Kota Tangerang Selatan,<br>Banten 15310</li>
-                    <li><i class="fas fa-phone-alt"></i> 628115663088</li>
-                    <li><i class="fas fa-envelope"></i> Hubertus8899</li>
-                </ul>
+            <div class="hero-image">
+
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>© 2025 Suzuki Genuine Parts. All rights reserved.</p>
-            <div class="payment-icons">
-                <span class="pay-badge">VISA</span>
-                <span class="pay-badge">MC</span>
-                <span class="pay-badge">BCA</span>
-                <span class="pay-badge">MANDIRI</span>
-                <span class="pay-badge">GoPay</span>
+    </section>
+
+    <!-- Finder -->
+    <div class="finder" id="tipe">
+        <div class="finder-inner">
+            <div class="finder-title"><i class="fas fa-search-plus"></i> &nbsp;Temukan Part untuk Kendaraan Anda</div>
+            <div class="finder-field">
+                <label>Tipe</label>
+                <select id="tipe-mobil">
+                    <option value="all">All</option>
+                    <option value="ertiga">Ertiga</option>
+                    <option value="jimny">Jimny</option>
+                    <option value="grandVitara">Grand Vitara</option>
+                    <option value="baleno">Baleno</option>
+                    <option value="ignis">Ignis</option>
+                    <option value="carry">Carry</option>
+                    <option value="apv">APV</option>
+                </select>
             </div>
+            <button class="btn-find"><i class="fas fa-search"></i> &nbsp;Cari Part</button>
         </div>
     </div>
-</footer>
-<script>
-const { createClient } = supabase
 
-const db = createClient(
-    'https://frziffueiuosikmhyoae.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyemlmZnVlaXVvc2lrbWh5b2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MTY0MDgsImV4cCI6MjA5NTI5MjQwOH0._G4TlPRL4EUps7qOWudkAcmUcKcPc42Q3kEtm2bQdhA'
-  )
 
-function hideAllProducts() {
-  const btnLihatSemua = document.getElementById('btnLihatSemua');
-  if (btnLihatSemua.textContent.trim() === 'Tampilkan Sedikit') {
-    toggleProducts();
-  }
-}
+    <!-- Featured Products -->
+    <section id="products" class="section">
+        <div class="section-inner">
+            <div class="section-head">
+                <h2 class="section-title">Produk <span>Utama</span></h2>
+                <a href="javascript:void(0)" id="btnLihatSemua" class="view-all" onclick="toggleProducts()">
 
-const featuredProducts =
-document.getElementById("featuredProducts");
-let productsData = [];
+                    Lihat Semua
 
-let isShowAll = false;
+                </a>
+            </div>
+            <div class="products-grid" id="featuredProducts">
 
-async function renderWebsiteProducts(showAll = false){
+            </div>
+        </div>
+    </section>
 
-    // Ambil data hanya sekali
-    if(productsData.length === 0){
+    <!-- Why Us -->
+    <section class="section why">
+        <div class="section-inner">
+            <div class="section-head">
+                <h2 class="section-title">Mengapa Memilih <span>Suzuki Genuine?</span></h2>
+            </div>
+            <div class="why-grid">
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-check-circle"></i></div>
+                    <h3>100% Genuine</h3>
+                    <p>Langsung dari pabrik Suzuki — cocok sempurna dan performa optimal untuk kendaraan Anda.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Bergaransi Resmi</h3>
+                    <p>Jaga garansi kendaraan Anda tetap berlaku dengan hanya menggunakan sparepart asli Suzuki.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-truck"></i></div>
+                    <h3>Pengiriman Cepat</h3>
+                    <p>Pengiriman ke seluruh Indonesia dengan opsi ekspres ke dealer resmi terdekat.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        const { data, error } = await db
-        .from("barang")
-        .select("*");
+    <!-- Newsletter -->
+    <div class="newsletter" style="background: #1a56a0; padding: 40px 16px;">
+        <div
+            style="max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch; color: #555;">
 
-        if(error){
-            console.log(error);
-            return;
+            <!-- INFO KIRI -->
+            <div
+                style="flex: 1 1 280px; background: #fff; border-radius: 12px; padding: 28px 24px; display: flex; flex-direction: column; gap: 16px; text-align: left;">
+
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; flex-direction: column;">
+                        <h2 style="font-size: 20px; font-weight: 700; margin: 0 0 6px;">Suzuki Genuine Parts</h2>
+                        <span
+                            style="background: #1a56a0; color: #fff; font-size: 12px; padding: 4px 12px; border-radius: 20px; font-weight: 500;">
+                            ★ Toko Resmi
+                        </span>
+                    </div>
+                    <i class="fas fa-map-marker-alt" style="font-size: 24px; color: #1a56a0;"></i>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid #eee; margin: 0;">
+
+                <!-- Alamat -->
+                <div
+                    style="background: #f9f9f9; border-radius: 8px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start;">
+                    <i class="fas fa-map-marker-alt" style="color: #1a56a0; margin-top: 2px; flex-shrink: 0;"></i>
+                    <div style="display: flex; flex-direction: column;">
+                        <p style="font-weight: 600; margin: 0 0 4px; font-size: 14px;">Alamat</p>
+                        <p style="font-size: 13px; color: #555; margin: 0; line-height: 1.5;">
+                            Lengkong Gudang Tim.,<br>Kec. Serpong, Kota Tangerang Selatan,<br>Banten 15310
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Telepon -->
+                <div
+                    style="background: #f9f9f9; border-radius: 8px; padding: 12px 14px; display: flex; gap: 12px; align-items: center;">
+                    <i class="fas fa-phone" style="color: #1a56a0; flex-shrink: 0;"></i>
+                    <div>
+                        <p style="font-weight: 600; margin: 0 0 2px; font-size: 14px;">Telepon</p>
+                        <p style="font-size: 13px; color: #555; margin: 0;">+62 811-5663-088</p>
+                    </div>
+                </div>
+
+                <!-- Jam Buka -->
+                <div
+                    style="background: #f9f9f9; border-radius: 8px; padding: 12px 14px; display: flex; gap: 12px; align-items: center;">
+                    <i class="fas fa-clock" style="color: #1a56a0; flex-shrink: 0;"></i>
+                    <div>
+                        <p style="font-weight: 600; margin: 0 0 2px; font-size: 14px;">Jam Buka</p>
+                        <p style="font-size: 13px; color: #555; margin: 0;">08:00 – 17:00</p>
+                        <p style="font-size: 12px; color: #1a56a0; margin: 2px 0 0; font-weight: 500;">Senin – Sabtu</p>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div
+                    style="background: #f9f9f9; border-radius: 8px; padding: 12px 14px; display: flex; gap: 12px; align-items: center;">
+                    <i class="fas fa-envelope" style="color: #1a56a0; flex-shrink: 0;"></i>
+                    <div>
+                        <p style="font-weight: 600; margin: 0 0 2px; font-size: 14px;">Email</p>
+                        <p style="font-size: 13px; color: #555; margin: 0;">Hubertus8899@gmail.com</p>
+                    </div>
+                </div>
+
+                <!-- Tombol -->
+                <a href="https://www.google.com/maps/dir/?api=1&destination=-6.295830,106.679401" target="_blank"
+                    style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #1a56a0; color: #fff; text-decoration: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; margin-top: auto;">
+                    <i class="fas fa-location-arrow"></i> Petunjuk Arah
+                </a>
+
+                <div style="display: flex; gap: 8px;">
+                    <a href="tel:+628115663088"
+                        style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; border: 1.5px solid #1a56a0; color: #1a56a0; text-decoration: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600;">
+                        <i class="fas fa-phone"></i> Telepon
+                    </a>
+                    <a href="https://wa.me/628115663088" target="_blank"
+                        style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; border: 1.5px solid #25d366; color: #25d366; text-decoration: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600;">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- MAP KANAN -->
+            <div style="flex: 2 1 400px ; border-radius: 12px; overflow: hidden; min-height: 460px;">
+                <div id="map" style="width: 100%; height: 100%; min-height: 460px;"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const map = L.map("map").setView([-6.295830, 106.679401], 16);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        L.marker([-6.295830, 106.679401])
+            .addTo(map)
+            .bindPopup("<b>Suzuki Genuine Parts</b><br>Lokasi toko kami.")
+            .openPopup();
+    </script>
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Tentang Suzuki Parts</h4>
+                    <p>Toko online resmi untuk sparepart dan aksesoris Suzuki asli di Indonesia. Kualitas terjamin
+                        langsung dari produsen.</p>
+                    <div class="footer-socials">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Tautan Cepat</h4>
+                    <ul>
+                        <li><a href="#">Beranda</a></li>
+                        <li><a href="#">Toko</a></li>
+                        <li><a href="#">Promo</a></li>
+                        <li><a href="#">Produk Baru</a></li>
+                        <li><a href="#">Akun Saya</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Layanan Pelanggan</h4>
+                    <ul>
+                        <li><a href="#">Hubungi Kami</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Kebijakan Pengiriman</a></li>
+                        <li><a href="#">Retur & Garansi</a></li>
+                        <li><a href="#">Lacak Pesanan</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Kontak</h4>
+                    <ul class="footer-contact">
+                        <li><i class="fas fa-map-marker-alt"></i>Lengkong Gudang Tim.,<br>Kec. Serpong, Kota Tangerang
+                            Selatan,<br>Banten 15310</li>
+                        <li><i class="fas fa-phone-alt"></i> 628115663088</li>
+                        <li><i class="fas fa-envelope"></i> Hubertus8899</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Suzuki Genuine Parts. All rights reserved.</p>
+                <div class="payment-icons">
+                    <span class="pay-badge">VISA</span>
+                    <span class="pay-badge">MC</span>
+                    <span class="pay-badge">BCA</span>
+                    <span class="pay-badge">MANDIRI</span>
+                    <span class="pay-badge">GoPay</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        const { createClient } = supabase
+
+        const db = createClient(
+            'https://frziffueiuosikmhyoae.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyemlmZnVlaXVvc2lrbWh5b2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MTY0MDgsImV4cCI6MjA5NTI5MjQwOH0._G4TlPRL4EUps7qOWudkAcmUcKcPc42Q3kEtm2bQdhA'
+        )
+
+        function hideAllProducts() {
+            const btnLihatSemua = document.getElementById('btnLihatSemua');
+            if (btnLihatSemua.textContent.trim() === 'Tampilkan Sedikit') {
+                toggleProducts();
+            }
         }
 
-        productsData = data;
-    }
+        const featuredProducts =
+            document.getElementById("featuredProducts");
+        let productsData = [];
 
-    featuredProducts.innerHTML = "";
+        let isShowAll = false;
 
-    // Jika false tampil 4 saja
-    let tampilProduk;
+        async function renderWebsiteProducts(showAll = false) {
 
-    if(showAll){
-        tampilProduk = productsData;
-    } else {
-        tampilProduk = productsData.slice(0, 4);
-    }
+            // Ambil data hanya sekali
+            if (productsData.length === 0) {
 
-    tampilProduk.forEach(product => {
+                const { data, error } = await db
+                    .from("barang")
+                    .select("*");
 
-        featuredProducts.innerHTML += `
+                if (error) {
+                    console.log(error);
+                    return;
+                }
+
+                productsData = data;
+            }
+
+            featuredProducts.innerHTML = "";
+
+            // Jika false tampil 4 saja
+            let tampilProduk;
+
+            if (showAll) {
+                tampilProduk = productsData;
+            } else {
+                tampilProduk = productsData.slice(0, 4);
+            }
+
+            tampilProduk.forEach(product => {
+
+                featuredProducts.innerHTML += `
 
         <div class="part-card">
 
@@ -836,169 +903,169 @@ async function renderWebsiteProducts(showAll = false){
         </div>
 
         `;
-    });
+            });
 
-    // Ganti teks tombol
-    const btn =
-    document.getElementById("btnLihatSemua");
+            // Ganti teks tombol
+            const btn =
+                document.getElementById("btnLihatSemua");
 
-    if(showAll){
-        btn.innerText = "Tampilkan Sedikit";
-    } else {
-        btn.innerText = "Lihat Semua";
-    }
-}
-window.onload = async function () {
+            if (showAll) {
+                btn.innerText = "Tampilkan Sedikit";
+            } else {
+                btn.innerText = "Lihat Semua";
+            }
+        }
+        window.onload = async function () {
 
-    await renderWebsiteProducts();
+            await renderWebsiteProducts();
 
-    updateCartBadge();
+            updateCartBadge();
 
-    // Event search realtime
-    document
-        .getElementById("searchInput")
-        .addEventListener("input", searchProducts);
+            // Event search realtime
+            document
+                .getElementById("searchInput")
+                .addEventListener("input", searchProducts);
 
-};
-
-
-function addToCart(id) {
- // Cek login dulu
-    if (localStorage.getItem('isLogin') !== 'true') {
-        window.location.href = '/login.html';
-        return;
-    }
-
-    const product = productsData.find(
-        item => item.id_barang == id
-    );
-
-    // ambil qty dari input
-    let qtyInput =
-    document.getElementById(`qty-${id}`);
-
-    let qty = parseInt(qtyInput.value);
-
-    // validasi
-    if(isNaN(qty) || qty < 1){
-        qty = 1;
-    }
-
-    let cart =
-    JSON.parse(localStorage.getItem("cart")) || [];
-
-    const existingItem =
-    cart.find(item => item.id_barang == id);
-
-    if(existingItem){
-
-        existingItem.qty += qty;
-
-    } else {
-
-        cart.push({
-            id_barang: product.id_barang,
-            nama_barang: product.nama_barang,
-            harga: product.harga,
-            gambar: product.url_gambar,
-            qty: qty
-        });
-
-    }
-
-    localStorage.setItem(
-        "cart",
-        JSON.stringify(cart)
-    );
-
-    updateCartBadge();
-
-    // reset qty ke 1 setelah ditambah
-    qtyInput.value = 1;
-
-    // Notifikasi modern
-    showToast(qty + " produk berhasil ditambahkan");
-}
+        };
 
 
-function updateCartBadge(){
+        function addToCart(id) {
+            // Cek login dulu
+            if (localStorage.getItem('isLogin') !== 'true') {
+                window.location.href = '/login.html';
+                return;
+            }
 
-    let cart =
-    JSON.parse(localStorage.getItem("cart")) || [];
+            const product = productsData.find(
+                item => item.id_barang == id
+            );
 
-    let totalQty = 0;
+            // ambil qty dari input
+            let qtyInput =
+                document.getElementById(`qty-${id}`);
 
-    cart.forEach(item => {
-        totalQty += item.qty;
-    });
+            let qty = parseInt(qtyInput.value);
 
-    document.querySelector(".cart-badge")
-    .innerText = totalQty;
-}
+            // validasi
+            if (isNaN(qty) || qty < 1) {
+                qty = 1;
+            }
 
-// FUNCTION TOAST
-function showToast(pesan){
+            let cart =
+                JSON.parse(localStorage.getItem("cart")) || [];
 
-    const toast =
-    document.getElementById("toast");
+            const existingItem =
+                cart.find(item => item.id_barang == id);
 
-    const toastText =
-    document.getElementById("toastText");
+            if (existingItem) {
 
-    toastText.innerText = pesan;
+                existingItem.qty += qty;
 
-    toast.classList.remove("hidden");
+            } else {
 
-    setTimeout(() => {
+                cart.push({
+                    id_barang: product.id_barang,
+                    nama_barang: product.nama_barang,
+                    harga: product.harga,
+                    gambar: product.url_gambar,
+                    qty: qty
+                });
 
-        toast.classList.add("hidden");
+            }
 
-    }, 1000); // cuma 1 detik
+            localStorage.setItem(
+                "cart",
+                JSON.stringify(cart)
+            );
 
-}
-function toggleProducts(){
+            updateCartBadge();
 
-    isShowAll = !isShowAll;
+            // reset qty ke 1 setelah ditambah
+            qtyInput.value = 1;
 
-    renderWebsiteProducts(isShowAll);
-}
-function searchProducts() {
-console.log("SEARCH JALAN");
-console.log(productsData);
-    const keyword = document
-        .getElementById("searchInput")
-        .value
-        .toLowerCase()
-        .trim();
+            // Notifikasi modern
+            showToast(qty + " produk berhasil ditambahkan");
+        }
 
-    // kalau kosong tampil normal
-    if (keyword === "") {
 
-        renderWebsiteProducts(isShowAll);
-        return;
-    }
+        function updateCartBadge() {
 
-    // filter produk
-    const filteredProducts = productsData.filter(product => {
+            let cart =
+                JSON.parse(localStorage.getItem("cart")) || [];
 
-        const namaBarang = String(product.nama_barang || "")
-            .toLowerCase();
+            let totalQty = 0;
 
-        const partNumber = String(product.part || "")
-            .toLowerCase();
+            cart.forEach(item => {
+                totalQty += item.qty;
+            });
 
-        return (
-            namaBarang.includes(keyword) ||
-            partNumber.includes(keyword)
-        );
-    });
+            document.querySelector(".cart-badge")
+                .innerText = totalQty;
+        }
 
-    featuredProducts.innerHTML = "";
+        // FUNCTION TOAST
+        function showToast(pesan) {
 
-    // kalau tidak ada hasil
-    if (filteredProducts.length === 0) {
+            const toast =
+                document.getElementById("toast");
 
-        featuredProducts.innerHTML = `
+            const toastText =
+                document.getElementById("toastText");
+
+            toastText.innerText = pesan;
+
+            toast.classList.remove("hidden");
+
+            setTimeout(() => {
+
+                toast.classList.add("hidden");
+
+            }, 1000); // cuma 1 detik
+
+        }
+        function toggleProducts() {
+
+            isShowAll = !isShowAll;
+
+            renderWebsiteProducts(isShowAll);
+        }
+        function searchProducts() {
+            console.log("SEARCH JALAN");
+            console.log(productsData);
+            const keyword = document
+                .getElementById("searchInput")
+                .value
+                .toLowerCase()
+                .trim();
+
+            // kalau kosong tampil normal
+            if (keyword === "") {
+
+                renderWebsiteProducts(isShowAll);
+                return;
+            }
+
+            // filter produk
+            const filteredProducts = productsData.filter(product => {
+
+                const namaBarang = String(product.nama_barang || "")
+                    .toLowerCase();
+
+                const partNumber = String(product.part || "")
+                    .toLowerCase();
+
+                return (
+                    namaBarang.includes(keyword) ||
+                    partNumber.includes(keyword)
+                );
+            });
+
+            featuredProducts.innerHTML = "";
+
+            // kalau tidak ada hasil
+            if (filteredProducts.length === 0) {
+
+                featuredProducts.innerHTML = `
             <div class="text-center py-10 col-span-full">
                 <h2 class="text-2xl font-bold">
                     Produk tidak ditemukan
@@ -1006,13 +1073,13 @@ console.log(productsData);
             </div>
         `;
 
-        return;
-    }
+                return;
+            }
 
-    // render hasil search
-    filteredProducts.forEach(product => {
+            // render hasil search
+            filteredProducts.forEach(product => {
 
-        featuredProducts.innerHTML += `
+                featuredProducts.innerHTML += `
 
         <div class="part-card">
 
@@ -1059,53 +1126,53 @@ console.log(productsData);
         </div>
 
         `;
-    });
-}
-// ... kode searchProducts di atas .../ <-- kurung penutup searchProducts
+            });
+        }
+        // ... kode searchProducts di atas .../ <-- kurung penutup searchProducts
         document.getElementById("tipe-mobil")
-  .addEventListener("change", function () {
-    filterTipeMobil(this.value);
-  });
+            .addEventListener("change", function () {
+                filterTipeMobil(this.value);
+            });
 
-  function showAllProducts() {
-  // Trigger lihat semua hanya jika belum ditampilkan
-  const btnLihatSemua = document.getElementById('btnLihatSemua');
-  if (btnLihatSemua.textContent.trim() === 'Lihat Semua') {
-    toggleProducts();
-  }
-}
+        function showAllProducts() {
+            // Trigger lihat semua hanya jika belum ditampilkan
+            const btnLihatSemua = document.getElementById('btnLihatSemua');
+            if (btnLihatSemua.textContent.trim() === 'Lihat Semua') {
+                toggleProducts();
+            }
+        }
 
-async function filterTipeMobil(tipeMobil) {
-  try {
-    let query = db.from("barang").select("*");
+        async function filterTipeMobil(tipeMobil) {
+            try {
+                let query = db.from("barang").select("*");
 
-    if (tipeMobil !== "all") {
-      query = query.ilike("TipeMobil", tipeMobil);
-    }
+                if (tipeMobil !== "all") {
+                    query = query.ilike("TipeMobil", tipeMobil);
+                }
 
-    const { data, error } = await query;
+                const { data, error } = await query;
 
-    if (error) {
-      console.log("Error filter:", error);
-      return;
-    }
+                if (error) {
+                    console.log("Error filter:", error);
+                    return;
+                }
 
-    productsData = data;
-    featuredProducts.innerHTML = "";
+                productsData = data;
+                featuredProducts.innerHTML = "";
 
-    if (!data || data.length === 0) {
-      featuredProducts.innerHTML = `
+                if (!data || data.length === 0) {
+                    featuredProducts.innerHTML = `
         <div class="text-center py-10 col-span-full">
           <h2 class="text-xl font-bold">
             Tidak ada produk untuk tipe ${tipeMobil}
           </h2>
         </div>
       `;
-      return;
-    }
+                    return;
+                }
 
-    data.forEach(product => {
-      featuredProducts.innerHTML += `
+                data.forEach(product => {
+                    featuredProducts.innerHTML += `
         <div class="part-card">
           <div class="card-img">
             <img src="${product.url_gambar}">
@@ -1132,54 +1199,54 @@ async function filterTipeMobil(tipeMobil) {
           </div>
         </div>
       `;
-    });
+                });
 
-    // reset tombol lihat semua
-    isShowAll = false;
-    document.getElementById("btnLihatSemua").innerText = "Lihat Semua";
+                // reset tombol lihat semua
+                isShowAll = false;
+                document.getElementById("btnLihatSemua").innerText = "Lihat Semua";
 
-    // scroll ke produk
-    document.getElementById("featuredProducts")
-      .scrollIntoView({ behavior: "smooth" });
+                // scroll ke produk
+                document.getElementById("featuredProducts")
+                    .scrollIntoView({ behavior: "smooth" });
 
-  } catch (err) {
-    console.log("Error:", err);
-  }
-}
-        // TAMBAHKAN DI SINI ↓
- async function filterKategori(event, kategori) {
-    event.preventDefault();
-
-    // reset search input
-    document.getElementById("searchInput").value = "";
-
-    try {
-        const { data, error } = await db
-            .from("barang")
-            .select("*")
-            .ilike("kategori", kategori);
-
-        if (error) {
-            console.log("Error filter:", error);
-            return;
+            } catch (err) {
+                console.log("Error:", err);
+            }
         }
+        // TAMBAHKAN DI SINI ↓
+        async function filterKategori(event, kategori) {
+            event.preventDefault();
 
-        productsData = data;
-        featuredProducts.innerHTML = "";
+            // reset search input
+            document.getElementById("searchInput").value = "";
 
-        if (!data || data.length === 0) {
-            featuredProducts.innerHTML = `
+            try {
+                const { data, error } = await db
+                    .from("barang")
+                    .select("*")
+                    .ilike("kategori", kategori);
+
+                if (error) {
+                    console.log("Error filter:", error);
+                    return;
+                }
+
+                productsData = data;
+                featuredProducts.innerHTML = "";
+
+                if (!data || data.length === 0) {
+                    featuredProducts.innerHTML = `
                 <div class="text-center py-10 col-span-full">
                     <h2 class="text-xl font-bold">
                         Tidak ada produk ${kategori}
                     </h2>
                 </div>
             `;
-            return;
-        }
+                    return;
+                }
 
-        data.forEach(product => {
-            featuredProducts.innerHTML += `
+                data.forEach(product => {
+                    featuredProducts.innerHTML += `
                 <div class="part-card">
                     <div class="card-img">
                         <img src="${product.url_gambar}">
@@ -1206,36 +1273,35 @@ async function filterTipeMobil(tipeMobil) {
                     </div>
                 </div>
             `;
-        });
+                });
 
-        // reset tombol lihat semua
-        isShowAll = false;
-        document.getElementById("btnLihatSemua").innerText = "Lihat Semua";
+                // reset tombol lihat semua
+                isShowAll = false;
+                document.getElementById("btnLihatSemua").innerText = "Lihat Semua";
 
-        // scroll ke produk
-        document.getElementById("featuredProducts")
-            .scrollIntoView({ behavior: "smooth" });
+                // scroll ke produk
+                document.getElementById("featuredProducts")
+                    .scrollIntoView({ behavior: "smooth" });
 
-    } catch (err) {
-        console.log("Error:", err);
-    }
-}
-</script>
-<div id="toast"
-class="fixed bottom-5 right-5 hidden z-50 pointer-events-none">
+            } catch (err) {
+                console.log("Error:", err);
+            }
+        }
+    </script>
+    <div id="toast" class="fixed bottom-5 right-5 hidden z-50 pointer-events-none">
 
-    <div class="bg-green-600 text-white px-6 py-4 rounded-xl shadow-xl flex items-center gap-3">
+        <div class="bg-green-600 text-white px-6 py-4 rounded-xl shadow-xl flex items-center gap-3">
 
-        <i class="fas fa-circle-check text-2xl"></i>
+            <i class="fas fa-circle-check text-2xl"></i>
 
-        <p id="toastText"
-           class="font-semibold">
-            Produk berhasil ditambahkan
-        </p>
+            <p id="toastText" class="font-semibold">
+                Produk berhasil ditambahkan
+            </p>
+
+        </div>
 
     </div>
 
-</div>
-
 </body>
+
 </html>

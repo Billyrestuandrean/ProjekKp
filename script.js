@@ -374,7 +374,7 @@ function switchTab(tabName, btn) {
   async function changeUserRole(idAdmin, newRole) {
     // Proteksi superadmin
     const target = allUsers.find(u => u.id_admin === idAdmin);
-    if (target && target.username === 'admin 1') {
+    if (target && target.id_admin === 1) {
       alert('Role Super Admin tidak dapat diubah.');
       return;
     }

@@ -332,12 +332,11 @@
     }
 
 // Tentukan role berdasarkan username
-const role = username.toLowerCase().includes('admin') ? 'admin' : 'user';
 
 // Simpan user baru
 const { error: insertErr } = await db
   .from('User')
-  .insert([{ username, password, role,nama_user: username }]);
+  .insert([{ username, password, role: "user",nama_user: username }]);
 
 if (insertErr) {
   showError('Gagal mendaftar. Silakan coba lagi.');

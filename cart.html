@@ -84,9 +84,6 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         Metode Pembayaran
     </label>
 
-    <label class="block font-bold mb-3">
-    Metode Pembayaran
-</label>
 
 <div class="space-y-3">
 
@@ -463,20 +460,70 @@ Subtotal: Rp${(item.harga * item.qty).toLocaleString("id-ID")}
 
      // ── Simpan ke Supabase ──────────────────────────────
 console.log(idPelanggan)
-    const { error: insertErr } = await db
-        .from("pesanan")
-        .insert([{
-            tanggal     : new Date().toISOString().split("T")[0], // format YYYY-MM-DD
-            id_pelanggan: +idPelanggan,
-            total       : total,
-            stok        : selectedItems.reduce((sum, item) => sum + item.qty, 0)
-        }]);
+   // SESUDAH
+const { data: pesananBaru, error: insertErr } = await db
+    .from("pesanan")
+    .insert([{
+        tanggal     : new Date().toISOString().split("T")[0],
+        id_pelanggan: +idPelanggan,
+        total       : total,
+        stok        : selectedItems.reduce((sum, item) => sum + item.qty, 0)
+    }])
+    .select()
+    .single();
 
-    if(insertErr){
-        console.error("Gagal menyimpan pesanan:", insertErr);
-        alert("Gagal menyimpan pesanan. Silakan coba lagi.");
-        return; // batalkan redirect jika gagal simpan
+if(insertErr){
+    console.error("Gagal menyimpan pesanan:", insertErr);
+    alert("Gagal menyimpan pesanan. Silakan coba lagi.");
+    return;
+}
+
+// ── Insert ke detail_pesanan ──────────────────────────
+const detailRows = selectedItems.map(item => ({
+    id_pesanan : pesananBaru.id_pesanan,
+    id_barang  : item.id_barang,
+    jumlah     : item.qty,
+    stok_total : item.harga * item.qty
+}));
+
+const { error: detailErr } = await db
+    .from("detail_pesanan")
+    .insert(detailRows);
+
+if(detailErr){
+    console.error("Gagal menyimpan detail pesanan:", detailErr);
+    // tidak menghentikan proses, checkout tetap lanjut
+}
+// ─────────────────────────────────────────────────────
+
+    // ── Update stok per produk ──────────────────────────────
+for (const item of selectedItems) {
+
+    // Ambil stok saat ini
+    const { data: barangData, error: fetchErr } = await db
+        .from("barang")
+        .select("stok")
+        .eq("id_barang", item.id_barang)
+        .single();
+
+    if (fetchErr) {
+        console.error("Gagal ambil stok produk:", fetchErr);
+        continue; // lanjut ke produk berikutnya
     }
+
+    const stokSekarang = barangData.stok ?? 0;
+    const stokBaru = Math.max(0, stokSekarang - item.qty);
+
+    const { error: updateErr } = await db
+        .from("barang")
+        .update({ stok: stokBaru })
+        .eq("id_barang", item.id_barang);
+
+    if (updateErr) {
+        console.error(`Gagal update stok produk ${item.nama_barang}:`, updateErr);
+    }
+}
+// ────────────────────────────────────────────────────────
     // Format pesan WhatsApp
     const pesan = `Halo Admin Suzuki Parts
 

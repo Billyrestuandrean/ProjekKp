@@ -11,7 +11,6 @@
   (function() {
     const role = localStorage.getItem('role');
     if (role !== 'admin') {
-      // Redirect ke halaman login atau tampilkan pesan
       window.location.replace('login.html');
     }
   })();
@@ -21,9 +20,216 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* ── Tab System ── */
+    .tab-nav {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid #e5e7eb;
+      margin-bottom: 1.5rem;
+    }
+
+    .tab-btn {
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #6b7280;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: #111827;
+    }
+
+    .tab-btn.active {
+      color: #2563eb;
+      border-bottom-color: #2563eb;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* ── User Table ── */
+    .user-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .user-table thead tr {
+      background: #f9fafb;
+    }
+
+    .user-table th {
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      color: #374151;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .user-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #f3f4f6;
+      color: #374151;
+      vertical-align: middle;
+    }
+
+    .user-table tbody tr:hover {
+      background: #f9fafb;
+    }
+
+    /* Avatar inisial */
+    .user-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Badge role */
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge-admin {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-user {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    /* Status dot */
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    .status-active { background: #10b981; }
+    .status-inactive { background: #d1d5db; }
+
+    /* Action buttons di tabel user */
+    .user-action-btn {
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .user-action-btn:hover { opacity: 0.8; }
+
+    .btn-promote {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .btn-demote {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .btn-delete-user {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    /* Stats row di atas tabel user */
+    .user-stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-chip {
+      background: #f3f4f6;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 13px;
+      color: #374151;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stat-chip span {
+      font-weight: 700;
+      color: #111827;
+    }
+
+    /* Search user */
+    .user-search-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .user-search-bar input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .user-search-bar input:focus {
+      border-color: #93c5fd;
+      box-shadow: 0 0 0 3px #eff6ff;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #9ca3af;
+    }
+
+    .empty-state i {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+  </style>
 </head>
 
 <body>
+
+  <!-- ── Edit Produk Modal (tidak diubah) ── -->
   <div id="editModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
   <div style="background:#fff; border-radius:12px; padding:1.5rem; width:100%; max-width:480px; margin:1rem;">
     
@@ -38,8 +244,8 @@
         <input id="edit-name" type="text" style="width:100%; box-sizing:border-box; padding:8px; border:1px solid #ddd; border-radius:8px;" />
       </div>
       <div>
-        <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">Part</label>
-        <input id="edit-part" type="text" style="width:100%; box-sizing:border-box; padding:8px; border:1px solid #ddd; border-radius:8px;" />
+          <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">Stok</label>
+          <input id="edit-stok" type="number" ... />
       </div>
       <div>
         <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">Harga</label>
@@ -64,7 +270,6 @@
           <option value="ignis">Ignis</option>
           <option value="carry">Carry</option>
           <option value="apv">APV</option>
-          <!-- Tambahkan tipe mobil lainnya di sini -->
         </select>
       </div>
     </div>
@@ -77,55 +282,48 @@
   </div>
 </div>
 
-<!-- TOPBAR -->
-
+<!-- ── TOPBAR (tidak diubah) ── -->
 <div class="topbar">
-
   <h1>
     <i class="fas fa-cogs"></i>
     Admin Dashboard
   </h1>
-
   <button onclick="logout()">
     <i class="fas fa-sign-out-alt"></i>
     Logout
   </button>
-
 </div>
 
-<!-- CONTENT -->
-
+<!-- ── CONTENT ── -->
 <div class="container">
 
-  <div class="card">
+  <!-- Tab Navigation -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('produk', this)">
+      <i class="fas fa-box"></i>
+      Produk
+    </button>
+    <button class="tab-btn" onclick="switchTab('user', this)">
+      <i class="fas fa-users"></i>
+      User
+    </button>
+    <button class="tab-btn" onclick="switchTab('transaksi', this)">
+      <i class="fas fa-receipt"></i>
+      Transaksi
+    </button>
+  </div>
 
-    <h2>Tambah Produk</h2>
+  <!-- ── TAB: PRODUK (konten lama, tidak diubah) ── -->
+  <div id="tab-produk" class="tab-panel active">
 
-    <div class="form-grid">
-
-      <input
-      type="text"
-      id="name"
-      placeholder="Nama Produk">
-
-      <input
-      type="text"
-      id="part"
-      placeholder="Part Number">
-
-      <input
-      type="text"
-      id="price"
-      placeholder="Harga">
-
-      <input
-      type="text"
-      id="image"
-      placeholder="URL Gambar">
-
-      <input type="text" 
-      id="kategori" 
-      placeholder="Kategori produk">
+    <div class="card">
+      <h2>Tambah Produk</h2>
+      <div class="form-grid">
+        <input type="text" id="name" placeholder="Nama Produk">
+        <input type="text" id="part" placeholder="Part Number">
+        <input type="text" id="price" placeholder="Harga">
+        <input type="text" id="image" placeholder="URL Gambar">
+        <input type="text" id="kategori" placeholder="Kategori produk">
         <select id="edit-car-type-add" style="width:100%; box-sizing:border-box; padding:8px; border:1px solid #ddd; border-radius:8px;">
           <option value="">-- Pilih Tipe Mobil --</option>
           <option value="ertiga">Ertiga</option>
@@ -136,41 +334,123 @@
           <option value="carry">Carry</option>
           <option value="apv">APV</option>
         </select>
-
-
+      </div>
+      <button class="add-btn" onclick="addProduct()">
+        Tambah Produk
+      </button>
     </div>
 
-    <button class="add-btn" onclick="addProduct()">
-      Tambah Produk
-    </button>
+    <div class="card">
+      <h2>Daftar Produk</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Gambar</th>
+            <th>Nama</th>
+            <th>Part</th>
+            <th>Harga</th>
+            <th>Kategori</th>
+            <th>Tipe Mobil</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="productList"></tbody>
+      </table>
+    </div>
 
   </div>
+  <!-- /tab-produk -->
 
-  <div class="card">
+  <!-- ── TAB: USER ── -->
+  <div id="tab-user" class="tab-panel">
 
-    <h2>Daftar Produk</h2>
+    <div class="card">
+      <h2>Kelola User</h2>
 
-    <table>
+      <!-- Statistik ringkas -->
+      <div class="user-stats" id="userStats">
+        <div class="stat-chip"><i class="fas fa-users" style="color:#6b7280;"></i> Total User: <span id="statTotal">–</span></div>
+        <div class="stat-chip"><i class="fas fa-user-shield" style="color:#92400e;"></i> Admin: <span id="statAdmin">–</span></div>
+        <div class="stat-chip"><i class="fas fa-user" style="color:#1d4ed8;"></i> User Biasa: <span id="statRegular">–</span></div>
+      </div>
 
-      <thead>
-        <tr>
-          <th>Gambar</th>
-          <th>Nama</th>
-          <th>Part</th>
-          <th>Harga</th>
-          <th>Kategori</th>
-          <th>Tipe Mobil</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
+      <!-- Search -->
+      <div class="user-search-bar">
+        <i class="fas fa-search" style="color:#9ca3af;"></i>
+        <input type="text" id="userSearchInput" placeholder="Cari nama atau email user..." oninput="filterUsers()" />
+      </div>
 
-      <tbody id="productList">
+      <!-- Tabel user -->
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>Nama User</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>ID</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="userList">
+          <tr>
+            <td colspan="6">
+              <div class="empty-state">
+                <i class="fas fa-circle-notch fa-spin"></i>
+                Memuat data user...
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-      </tbody>
-
-    </table>
-
+    </div>
   </div>
+  <!-- /tab-user -->
+
+  <!-- ── TAB: TRANSAKSI ── -->
+  <div id="tab-transaksi" class="tab-panel">
+    <div class="card">
+      <h2>History Transaksi</h2>
+
+      <!-- Stats transaksi -->
+      <div class="user-stats" id="transaksiStats">
+        <div class="stat-chip"><i class="fas fa-shopping-bag" style="color:#6b7280;"></i> Total Transaksi: <span id="statTotalTrx">–</span></div>
+        <div class="stat-chip"><i class="fas fa-money-bill-wave" style="color:#059669;"></i> Total Pendapatan: <span id="statTotalPendapatan">–</span></div>
+      </div>
+
+      <!-- Search transaksi -->
+      <div class="user-search-bar">
+        <i class="fas fa-search" style="color:#9ca3af;"></i>
+        <input type="text" id="transaksiSearchInput" placeholder="Cari nama pelanggan atau nama barang..." oninput="filterTransaksi()" />
+      </div>
+
+      <!-- Tabel transaksi -->
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Nama Pelanggan</th>
+            <th>Nama Barang</th>
+            <th>Total Qty</th>
+            <th>Total Harga</th>
+            <th>Tanggal Transaksi</th>
+          </tr>
+        </thead>
+        <tbody id="transaksiList">
+          <tr>
+            <td colspan="6">
+              <div class="empty-state">
+                <i class="fas fa-circle-notch fa-spin"></i>
+                Memuat data transaksi...
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- /tab-transaksi -->
 
 </div>
 

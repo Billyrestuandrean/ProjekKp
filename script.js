@@ -63,13 +63,13 @@ let products = []
 async function addProduct(){ 
 
   const name  = document.getElementById("name").value;
-  const part  = document.getElementById("part").value;
+  const stok  = document.getElementById("stok").value;
   const price = document.getElementById("price").value;
   const image = document.getElementById("image").value;
   const kategori = document.getElementById("kategori").value;
   const car_type = document.getElementById("edit-car-type-add").value;
 
-  if(name === "" || part === "" || price === "" || image === "" || kategori === "" || car_type === ""){
+  if(name === "" || stok === "" || price === "" || image === "" || kategori === "" || car_type === ""){
     console.log(name, )
     alert("Semua field wajib diisi");
     return;
@@ -79,7 +79,7 @@ async function addProduct(){
     .from("barang")
   .insert({
     nama_barang: name,
-    part: part,
+    stok: stok,
     harga: price,
     url_gambar: image,
     kategori: kategori,
@@ -99,7 +99,7 @@ async function addProduct(){
   renderProducts()
 
   document.getElementById("name").value  = "";
-  document.getElementById("part").value  = "";
+  document.getElementById("stok").value  = "";
   document.getElementById("price").value = "";
   document.getElementById("image").value = "";
   document.getElementById("kategori").value = "";
@@ -133,7 +133,7 @@ async function renderProducts(){
 
         <td>${product.nama_barang}</td>
 
-        <td>${product.part}</td>
+        <td>${product.stok}</td>
 
         <td>
   Rp${product.harga.toLocaleString("id-ID")}
@@ -206,7 +206,7 @@ function editProduct(index) {
   currentEditIndex = index;
 
   document.getElementById("edit-name").value = product.nama_barang;
-  document.getElementById("edit-part").value = product.part;
+  document.getElementById("edit-stok").value = product.stok;
   document.getElementById("edit-price").value = product.harga;
   document.getElementById("edit-image").value = product.url_gambar;
   document.getElementById("edit-category").value = product.kategori;
@@ -223,18 +223,18 @@ function closeEditModal() {
 
 async function saveEditProduct() {
   const name = document.getElementById("edit-name").value;
-  const part = document.getElementById("edit-part").value;
+  const stok = document.getElementById("edit-stok").value;
   const price = document.getElementById("edit-price").value;
   const image = document.getElementById("edit-image").value;
   const category = document.getElementById("edit-category").value;
   const car_type = document.getElementById("edit-car-type").value;
 
-  if (name && part && price && image) {
+  if (name && stok && price && image) {
     const { data, error } = await db
       .from("barang")
       .update({
         nama_barang: name,
-        part: part,
+        stok: stok,
         harga: price,
         url_gambar: image,
         kategori: category,
@@ -265,3 +265,292 @@ function logout(){
 }
 
 renderProducts();
+ /* ── Tab switcher ── */
+function switchTab(tabName, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tabName).classList.add('active');
+  btn.classList.add('active');
+
+  if (tabName === 'user') renderUsers();
+  if (tabName === 'transaksi') renderTransaksi();  // ← tambahkan ini
+} 
+  /* ── Data user (akan diisi dari Supabase) ── */
+  let allUsers = [];
+ 
+  async function renderUsers() {
+    const tbody = document.getElementById('userList');
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-circle-notch fa-spin"></i> Memuat data user...</div></td></tr>`;
+ 
+    const { data, error } = await db
+      .from('User')
+      .select('*')
+      .order('id_admin', { ascending: false });
+ 
+    if (error) {
+      console.error('Gagal memuat user:', error);
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-exclamation-circle"></i><br>Gagal memuat data user.<br><small style="font-size:12px;">${error.message}</small></div></td></tr>`;
+      return;
+    }
+ 
+    allUsers = data || [];
+    updateUserStats(allUsers);
+    renderUserRows(allUsers);
+  }
+ 
+  function renderUserRows(users) {
+    const tbody = document.getElementById('userList');
+ 
+    if (users.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-users-slash"></i><br>Tidak ada user ditemukan.</div></td></tr>`;
+      return;
+    }
+ 
+    tbody.innerHTML = users.map(user => {
+      const initials     = getInitials(user.nama_user || '?');
+      const isAdmin      = (user.role === 'admin');
+      const isSuperAdmin = (user.username === 'admin 1');
+ 
+      const aksiHTML = isSuperAdmin
+        ? `<span style="font-size:12px; color:#9ca3af; font-style:italic;">
+             <i class="fas fa-lock" style="margin-right:4px;"></i>Super Admin
+           </span>`
+        : `<div style="display:flex; gap:6px; flex-wrap:wrap;">
+             ${isAdmin
+               ? `<button class="user-action-btn btn-demote" onclick="changeUserRole(${user.id_admin}, 'user')">Jadikan User</button>`
+               : `<button class="user-action-btn btn-promote" onclick="changeUserRole(${user.id_admin}, 'admin')">Jadikan Admin</button>`
+             }
+             <button class="user-action-btn btn-delete-user" onclick="deleteUser(${user.id_admin})">Hapus</button>
+           </div>`;
+ 
+      return `
+        <tr>
+          <td>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="user-avatar" style="${isSuperAdmin ? 'background:#fef3c7; color:#92400e;' : ''}">${initials}</div>
+              <span style="font-weight:500;">${user.nama_user || '-'}
+                ${isSuperAdmin ? '<i class=\"fas fa-crown\" style=\"color:#f59e0b; font-size:11px; margin-left:4px;\" title=\"Super Admin\"></i>' : ''}
+              </span>
+            </div>
+          </td>
+          <td style="color:#6b7280;">${user.username || '-'}</td>
+          <td>
+            <span class="badge ${isAdmin ? 'badge-admin' : 'badge-user'}">
+              ${isAdmin ? 'Admin' : 'User'}
+            </span>
+          </td>
+          <td>
+            <span class="status-dot status-active"></span>
+            Aktif
+          </td>
+          <td style="color:#9ca3af; font-size:13px;">ID #${user.id_admin}</td>
+          <td>${aksiHTML}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+ 
+  function updateUserStats(users) {
+    const adminCount   = users.filter(u => u.role === 'admin').length;
+    const regularCount = users.length - adminCount;
+    document.getElementById('statTotal').textContent   = users.length;
+    document.getElementById('statAdmin').textContent   = adminCount;
+    document.getElementById('statRegular').textContent = regularCount;
+  }
+ 
+  function filterUsers() {
+    const q = document.getElementById('userSearchInput').value.toLowerCase();
+    const filtered = allUsers.filter(u =>
+      (u.nama_user || '').toLowerCase().includes(q) ||
+      (u.username  || '').toLowerCase().includes(q)
+    );
+    renderUserRows(filtered);
+  }
+ 
+  function getInitials(str) {
+    return str.split(' ').slice(0, 2).map(w => w[0]?.toUpperCase() || '').join('') || '?';
+  }
+ 
+  async function changeUserRole(idAdmin, newRole) {
+    // Proteksi superadmin
+    const target = allUsers.find(u => u.id_admin === idAdmin);
+    if (target && target.username === 'admin 1') {
+      alert('Role Super Admin tidak dapat diubah.');
+      return;
+    }
+ 
+    const label = newRole === 'admin' ? 'Admin' : 'User biasa';
+    if (!confirm(`Ubah role user ini menjadi ${label}?`)) return;
+ 
+    const { error } = await db
+      .from('User')
+      .update({ role: newRole })
+      .eq('id_admin', idAdmin)
+      .select();
+ 
+    if (error) {
+      alert('Gagal mengubah role: ' + error.message);
+      return;
+    }
+ 
+    renderUsers();
+  }
+ 
+  async function deleteUser(idAdmin) {
+    // Proteksi superadmin
+    const target = allUsers.find(u => u.id_admin === idAdmin);
+    if (target && target.username === 'admin 1') {
+      alert('Akun Super Admin tidak dapat dihapus.');
+      return;
+    }
+ 
+    if (!confirm('Yakin hapus user ini? Tindakan ini tidak dapat dibatalkan.')) return;
+ 
+    const { error } = await db
+      .from('User')
+      .delete()
+      .eq('id_admin', idAdmin);
+ 
+    if (error) {
+      alert('Gagal menghapus user: ' + error.message);
+      return;
+    }
+ 
+    renderUsers();
+  }
+
+  /* ── TRANSAKSI ── */
+let allTransaksi = [];
+
+async function renderTransaksi() {
+  const tbody = document.getElementById('transaksiList');
+  tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-circle-notch fa-spin"></i> Memuat data transaksi...</div></td></tr>`;
+
+  // 1. Ambil pesanan + pelanggan
+  const { data: pesananData, error: pesananErr } = await db
+    .from('pesanan')
+    .select(`
+      id_pesanan,
+      tanggal,
+      total,
+      stok,
+      pelanggan ( nama_pelanggan )
+    `)
+    .order('tanggal', { ascending: false });
+
+  if (pesananErr) {
+    console.error('Gagal memuat pesanan:', pesananErr);
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-exclamation-circle"></i><br>Gagal memuat data transaksi.<br><small>${pesananErr.message}</small></div></td></tr>`;
+    return;
+  }
+
+  // 2. Ambil semua detail_pesanan
+  const { data: detailData, error: detailErr } = await db
+    .from('detail_pesanan')
+    .select('id_pesanan, id_barang, jumlah, stok_total');
+
+  if (detailErr) {
+    console.error('Gagal memuat detail pesanan:', detailErr);
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-exclamation-circle"></i><br>Gagal memuat detail transaksi.<br><small>${detailErr.message}</small></div></td></tr>`;
+    return;
+  }
+
+  // 3. Ambil barang berdasarkan id_barang yang ada di detail
+  const idBarangList = [...new Set(detailData.map(d => d.id_barang))];
+  let barangMap = {};
+
+  if (idBarangList.length > 0) {
+    const { data: barangData, error: barangErr } = await db
+      .from('barang')
+      .select('id_barang, nama_barang')
+      .in('id_barang', idBarangList);
+
+    if (!barangErr) {
+      barangData.forEach(b => { barangMap[b.id_barang] = b.nama_barang; });
+    }
+  }
+
+  // 4. Buat lookup map pesanan
+  const pesananMap = {};
+  (pesananData || []).forEach(p => { pesananMap[p.id_pesanan] = p; });
+
+  // 5. Flatten detail → satu baris per item
+  allTransaksi = [];
+
+  if (detailData.length > 0) {
+    detailData.forEach(detail => {
+      const pesanan = pesananMap[detail.id_pesanan];
+      if (!pesanan) return;
+
+      const tanggal = pesanan.tanggal
+        ? new Date(pesanan.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+        : '-';
+
+      allTransaksi.push({
+        id_pesanan    : pesanan.id_pesanan,
+        nama_pelanggan: pesanan.pelanggan?.nama_pelanggan || '-',
+        nama_barang   : barangMap[detail.id_barang] || '-',
+        jumlah        : detail.jumlah,
+        total_harga   : pesanan.total,
+        tanggal       : tanggal
+      });
+    });
+  } else {
+    // Fallback jika detail_pesanan masih kosong
+    (pesananData || []).forEach(pesanan => {
+      const tanggal = pesanan.tanggal
+        ? new Date(pesanan.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+        : '-';
+
+      allTransaksi.push({
+        id_pesanan    : pesanan.id_pesanan,
+        nama_pelanggan: pesanan.pelanggan?.nama_pelanggan || '-',
+        nama_barang   : '-',
+        jumlah        : pesanan.stok ?? '-',
+        total_harga   : pesanan.total,
+        tanggal       : tanggal
+      });
+    });
+  }
+
+  updateTransaksiStats(allTransaksi);
+  renderTransaksiRows(allTransaksi);
+}
+
+function renderTransaksiRows(rows) {
+  const tbody = document.getElementById('transaksiList');
+
+  if (rows.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-inbox"></i><br>Tidak ada data transaksi.</div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = rows.map((row, i) => `
+    <tr>
+      <td style="color:#9ca3af; font-size:13px;">${i + 1}</td>
+      <td style="font-weight:500;">${row.nama_pelanggan}</td>
+      <td>${row.nama_barang}</td>
+      <td style="text-align:center;">${row.jumlah}</td>
+      <td style="color:#059669; font-weight:600;">Rp${Number(row.total_harga).toLocaleString('id-ID')}</td>
+      <td style="color:#9ca3af; font-size:13px;">${row.tanggal}</td>
+    </tr>
+  `).join('');
+}
+
+function updateTransaksiStats(rows) {
+  // Hitung unik berdasarkan id_pesanan agar total pendapatan tidak dobel
+  const uniquePesanan = [...new Map(rows.map(r => [r.id_pesanan, r])).values()];
+  const totalPendapatan = uniquePesanan.reduce((sum, r) => sum + Number(r.total_harga), 0);
+
+  document.getElementById('statTotalTrx').textContent = uniquePesanan.length;
+  document.getElementById('statTotalPendapatan').textContent = 'Rp' + totalPendapatan.toLocaleString('id-ID');
+}
+
+function filterTransaksi() {
+  const q = document.getElementById('transaksiSearchInput').value.toLowerCase();
+  const filtered = allTransaksi.filter(r =>
+    r.nama_pelanggan.toLowerCase().includes(q) ||
+    r.nama_barang.toLowerCase().includes(q)
+  );
+  renderTransaksiRows(filtered);
+}
